@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LBQ64QEDDX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LBQ64QEDDX');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotionKits — AI-built Notion workspaces for your job</title>
+<meta name="description" content="Describe your job, get a custom Notion workspace in seconds. Free AI tool. Premium ready-to-use kits from $27.">
+<meta name="google-site-verification" content="BLvLqiBrriooRJ_Q7xni-AlkAUE_CGrLnTjUAi1cacg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1916;
+    --ink2: #6b6a63;
+    --ink3: #9b9a93;
+    --bg: #fafaf8;
+    --surface: #ffffff;
+    --border: #e8e7e0;
+    --border2: #d4d3cc;
+    --teal: #0f6e56;
+    --teal-light: #e1f5ee;
+    --teal-mid: #1d9e75;
+    --amber: #ba7517;
+    --amber-light: #faeeda;
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(250,250,248,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    max-width: 1100px; margin: 0 auto; width: 100%;
+  }
+  nav { max-width: 100%; }
+  .nav-inner {
+    max-width: 1100px; margin: 0 auto; width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 20px; color: var(--ink); text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo-dot { width: 8px; height: 8px; background: var(--teal-mid); border-radius: 50%; }
+  .nav-links { display: flex; align-items: center; gap: 8px; }
+  .nav-link {
+    font-size: 14px; color: var(--ink2); text-decoration: none;
+    padding: 6px 12px; border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-link:hover { background: var(--border); color: var(--ink); }
+  .nav-cta {
+    font-size: 14px; font-weight: 500;
+    background: var(--ink); color: #fff;
+    padding: 7px 16px; border-radius: 7px;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 80px 0; }
+
+  /* HERO */
+  .hero {
+    padding: 100px 0 80px;
+    text-align: center;
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--teal);
+    background: var(--teal-light); padding: 4px 12px;
+    border-radius: 100px; margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(38px, 6vw, 68px);
+    line-height: 1.1; font-weight: 400;
+    color: var(--ink); margin-bottom: 20px;
+    max-width: 800px; margin-left: auto; margin-right: auto;
+  }
+  .hero h1 em { font-style: italic; color: var(--teal-mid); }
+  .hero-sub {
+    font-size: 17px; color: var(--ink2);
+    max-width: 520px; margin: 0 auto 40px;
+    line-height: 1.65;
+  }
+  .hero-stats {
+    display: flex; justify-content: center; gap: 32px;
+    margin-top: 48px; flex-wrap: wrap;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px; color: var(--ink);
+  }
+  .hero-stat-label { font-size: 12px; color: var(--ink3); margin-top: 2px; }
+
+  /* TOOL SECTION */
+  .tool-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .tool-wrap {
+    max-width: 720px; margin: 0 auto;
+  }
+  .section-label {
+    font-size: 12px; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink3);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 400; line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .section-sub { font-size: 16px; color: var(--ink2); margin-bottom: 40px; line-height: 1.6; }
+
+  /* AI TOOL */
+  .tool-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+  .tool-label { font-size: 13px; color: var(--ink2); margin-bottom: 8px; font-weight: 500; }
+  .tool-textarea {
+    width: 100%; border: 1px solid var(--border2);
+    border-radius: var(--radius); padding: 12px 14px;
+    font-family: 'Inter', sans-serif; font-size: 14px;
+    color: var(--ink); background: var(--surface);
+    resize: none; outline: none; line-height: 1.6;
+    transition: border-color 0.15s;
+  }
+  .tool-textarea:focus { border-color: var(--teal-mid); }
+  .tool-textarea::placeholder { color: var(--ink3); }
+
+  .examples {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;
+  }
+  .example-chip {
+    font-size: 12px; color: var(--ink2);
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 100px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .example-chip:hover { background: var(--teal-light); border-color: var(--teal-mid); color: var(--teal); }
+
+  .generate-btn {
+    width: 100%; margin-top: 16px;
+    background: var(--ink); color: #fff;
+    border: none; border-radius: var(--radius);
+    padding: 13px; font-size: 15px; font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .generate-btn:hover { opacity: 0.85; }
+  .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* RESULTS */
+  .result-area { display: none; }
+  .result-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .result-title { font-size: 14px; font-weight: 500; color: var(--ink2); }
+  .free-badge {
+    font-size: 11px; font-weight: 500;
+    background: var(--teal-light); color: var(--teal);
+    padding: 3px 10px; border-radius: 100px;
+  }
+  .pages-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .page-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .page-icon { font-size: 20px; flex-shrink: 0; line-height: 1.4; }
+  .page-name { font-size: 14px; font-weight: 500; color: var(--ink); margin-bottom: 3px; }
+  .page-desc { font-size: 13px; color: var(--ink2); line-height: 1.5; margin-bottom: 8px; }
+  .page-props { display: flex; flex-wrap: wrap; gap: 5px; }
+  .prop-tag {
+    font-size: 11px; color: var(--ink3);
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 2px 8px; border-radius: 4px;
+  }
+
+  .tip-box {
+    background: var(--teal-light); border-radius: var(--radius);
+    padding: 12px 14px; display: flex; gap: 10px;
+    align-items: flex-start; margin-bottom: 16px;
+  }
+  .tip-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  .tip-text { font-size: 13px; color: var(--teal); line-height: 1.55; }
+
+  .upsell-card {
+    background: var(--ink); border-radius: var(--radius-lg);
+    padding: 20px 24px; color: #fff;
+  }
+  .upsell-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+  .upsell-sub { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.55; margin-bottom: 16px; }
+  .upsell-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+  .upsell-btn-primary {
+    background: var(--teal-mid); color: #fff;
+    border: none; border-radius: 8px;
+    padding: 9px 18px; font-size: 14px; font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer; transition: opacity 0.15s;
+    text-decoration: none; display: inline-block;
+  }
+  .upsell-btn-primary:hover { opacity: 0.9; }
+  .upsell-btn-ghost {
+    background: transparent; color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px; padding: 9px 18px;
+    font-size: 14px; font-family: 'Inter', sans-serif;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .upsell-btn-ghost:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+  .loading-state {
+    display: none; text-align: center;
+    padding: 32px 0; color: var(--ink2); font-size: 14px;
+  }
+  .loading-dots::after {
+    content: ''; animation: dots 1.2s steps(4, end) infinite;
+  }
+  @keyframes dots {
+    0%,20%{content:'.'} 40%{content:'..'} 60%,80%{content:'...'} 100%{content:''}
+  }
+
+  /* HOW IT WORKS */
+  .steps-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px; margin-top: 48px;
+  }
+  .step-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 24px;
+  }
+  .step-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 36px; color: var(--border2); line-height: 1;
+    margin-bottom: 16px;
+  }
+  .step-title { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+  .step-desc { font-size: 14px; color: var(--ink2); line-height: 1.6; }
+
+  /* PRICING */
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px; max-width: 680px; margin: 48px auto 0;
+  }
+  .pricing-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 28px;
+  }
+  .pricing-card.featured {
+    border-color: var(--teal-mid); border-width: 2px;
+  }
+  .pricing-tier { font-size: 13px; font-weight: 500; color: var(--ink2); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .pricing-price {
+    font-family: 'Instrument Serif', serif;
+    font-size: 44px; color: var(--ink); line-height: 1;
+    margin-bottom: 4px;
+  }
+  .pricing-note { font-size: 13px; color: var(--ink3); margin-bottom: 24px; }
+  .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .pricing-features li {
+    font-size: 14px; color: var(--ink2);
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .feat-check { color: var(--teal-mid); flex-shrink: 0; font-size: 15px; margin-top: 1px; }
+  .feat-x { color: var(--border2); flex-shrink: 0; font-size: 15px; margin-top: 1px; }
+  .pricing-btn {
+    display: block; text-align: center;
+    padding: 11px; border-radius: var(--radius);
+    font-size: 14px; font-weight: 500;
+    text-decoration: none; transition: all 0.15s;
+    border: none; font-family: 'Inter', sans-serif;
+    cursor: pointer; width: 100%;
+  }
+  .pricing-btn.free { background: var(--bg); color: var(--ink); border: 1px solid var(--border2); }
+  .pricing-btn.free:hover { background: var(--border); }
+  .pricing-btn.paid { background: var(--ink); color: #fff; }
+  .pricing-btn.paid:hover { opacity: 0.85; }
+
+  /* NICHES */
+  .niches-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px; margin-top: 40px;
+  }
+  .niche-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px;
+    text-align: center; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .niche-card:hover { border-color: var(--teal-mid); background: var(--teal-light); }
+  .niche-icon { font-size: 24px; margin-bottom: 8px; }
+  .niche-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+  .niche-desc { font-size: 12px; color: var(--ink3); margin-top: 3px; }
+
+  /* FAQ */
+  .faq-list { max-width: 640px; margin: 40px auto 0; }
+  .faq-item {
+    border-bottom: 1px solid var(--border); padding: 20px 0;
+  }
+  .faq-q { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 8px; }
+  .faq-a { font-size: 14px; color: var(--ink2); line-height: 1.65; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0; text-align: center;
+    font-size: 13px; color: var(--ink3);
+  }
+  footer a { color: var(--ink2); text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+
+  /* SCROLL ANCHOR */
+  #tool { scroll-margin-top: 72px; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 64px 0 56px; }
+    section { padding: 56px 0; }
+    .nav-links .nav-link { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo"><span class="logo-dot"></span>NotionKits</a>
+    <div class="nav-links">
+      <a href="#how" class="nav-link">How it works</a>
+      <a href="blog/index.html" class="nav-link">Blog</a>
+      <a href="#niches" class="nav-link">Niches</a>
+      <a href="#pricing" class="nav-link">Pricing</a>
+      <a href="#tool" class="nav-cta">Preview kits →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">✦ Preview any kit free · No account needed</div>
+    <h1>Notion kits<br><em>built for your job</em></h1>
+    <p class="hero-sub">Pick your niche and preview what's inside each kit — free. Buy the one that fits and duplicate it into your Notion in 60 seconds.</p>
+    <a href="#tool" class="nav-cta" style="display:inline-block; padding: 13px 28px; font-size: 16px; border-radius: 10px;">Preview kits free →</a>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">2,400+</div>
+        <div class="hero-stat-label">Workspaces generated</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">from $17</div>
+        <div class="hero-stat-label">One-time premium kit</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">$960</div>
+        <div class="hero-stat-label">Avg. SaaS cost replaced</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TEMPLATE PREVIEW TOOL -->
+<section class="tool-section" id="tool">
+  <div class="container">
+    <div class="tool-wrap">
+      <p class="section-label">Free preview</p>
+      <h2 class="section-title">Pick your niche.<br>See what's inside.</h2>
+      <p class="section-sub">Click your role below to preview the exact pages and databases inside each kit — free, no signup needed.</p>
+
+      <div class="tool-card">
+        <p class="tool-label">What's your job or role?</p>
+        <div class="examples" style="margin-top:0">
+          <span class="example-chip" onclick="showKit('freelancer')">🎨 Freelancer</span>
+          <span class="example-chip" onclick="showKit('realestate')">🏠 Real estate</span>
+          <span class="example-chip" onclick="showKit('creator')">🎬 Content creator</span>
+          <span class="example-chip" onclick="showKit('adhd')">🧠 ADHD</span>
+          <span class="example-chip" onclick="showKit('student')">📚 Student</span>
+          <span class="example-chip" onclick="showKit('nurse')">🏥 Nurse</span>
+          <span class="example-chip" onclick="showKit('creative')">🎨 Creative Business</span>
+          <span class="example-chip" onclick="showKit('secondbrain')">🧠 Second Brain</span>
+          <span class="example-chip" onclick="showKit('finance')">💰 Personal Finance</span>
+          <span class="example-chip" onclick="showKit('fitness')">💪 Health & Fitness</span>
+          <span class="example-chip" onclick="showKit('airbnb')">🏡 Airbnb Host</span>
+          <span class="example-chip" onclick="showKit('architecture')">🏗️ Architecture</span>
+          <span class="example-chip" onclick="showKit('b2b')">🏢 B2B Business</span>
+        </div>
+      </div>
+
+      <div class="result-area" id="resultArea" style="display:none">
+        <div class="result-header">
+          <p class="result-title" id="kitTitle">Kit preview</p>
+          <span class="free-badge">Free preview</span>
+        </div>
+        <div class="pages-grid" id="pagesGrid" style="display:flex; flex-direction:column; gap:10px;"></div>
+        <div class="upsell-card" id="upsellCard">
+          <p class="upsell-title">Get the full kit — everything unlocked</p>
+          <p class="upsell-sub">One-time payment · Lifetime updates · Duplicate into your Notion in 60 seconds · PDF setup guide included</p>
+          <div class="upsell-buttons">
+            <a id="upsellBtn" href="#" target="_blank" class="upsell-btn-primary">Get this kit →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUNDLE SECTION -->
+<section style="background:#1A1916; padding:80px 0;">
+  <div class="container" style="max-width:860px; margin:0 auto; padding:0 24px;">
+    <div style="text-align:center; margin-bottom:40px;">
+      <span style="font-size:12px; letter-spacing:3px; color:#888780; text-transform:uppercase;">Best Value</span>
+      <h2 style="font-family:'Instrument Serif',Georgia,serif; font-size:42px; color:#FAFAF8; margin:12px 0 8px;">Complete Bundle</h2>
+      <p style="color:#D3D1C7; font-size:18px; margin:0;">All 14 templates. One price. Yours forever.</p>
+    </div>
+
+    <div style="background:#FAFAF8; border-radius:16px; padding:40px; margin-bottom:32px;">
+      <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; margin-bottom:32px;">
+        <div style="background:#F1EFE8; border-radius:8px; padding:12px 14px; border:1px solid #E8E7E0;">
+          <div style="font-size:13px; font-weight:600; color:#1A1916;">💼 Freelance Business OS</div>
+          <div style="font-size:11px; color:#888780; margin-top:2px;">$27</div>
+        </div>
+        <div style="background:#F1EFE8; border-radius:8px; padding:12px 14px; border:1px solid #E8E7E0;">
+          <div style="font-size:13px; font-weight:600; color:#1A1916;">🏠 Real Estate CRM</div>
+          <div style="font-size:11px; color:#888780; margin-top:2px;">$37</div>
+        </div>
+        <div style="background:#F1EFE8; border-radius:8px; padding:12px 14px; border:1px solid #E8E7E0;">
+          <div style="font-size:13px; font-weight:600; color:#1A1916;">🎬 Content Creator OS</div>
+          <div style="font-size:11px; color:#888780; margin-top:2px;">$27</div>
+        </div>
+        <div style="background:#F1EFE8; border-radius:8px; padding:12px 14px; border:1px solid #E8E7E0;">
+          <div style="font-size:13px; font-weight:600; color:#1A1916;">🧠 ADHD System</div>
+          <div style="font-size:11px; color:#888780; margin-top:2px;">$19</div>
+        </div>
+        <div style="background:#F1EFE8; border-radius:8px; padding:12px 14px; border:1px solid #E8E7E0;">
+          <div style="font-size:13px; font-weight:600; color:#1A1916;">📚 Student OS</div>
+          <div style="font-size:11px; color:#888780; margin-top:2px;">$17</div>
+        </div>
+        <div style="background:#F1EFE8; border-radius:8px; padding:12px 14px; border:1px solid #E8E7E0;">
+          <div style="font-size:13px; font-weight:600; color:#1A1916;">🏥 Nurse &amp; Healthcare OS</div>
+          <div style="font-size:11px; color:#888780; margin-top:2px;">$27</div>
+        </div>
+        <div style="background:#F1EFE8; border-radius:8px; padding:12px 14px; border:1px solid #E8E7E0;">
+          <div style="font-size:13px; font-weight:600; color:#1A1916;">🎨 Creative Business OS</div>
+          <div style="font-size:11px; color:#888780; margin-top:2px;">$37</div>
+        </div>
+        <div style="background:#F1EFE8; border-radius:8px; padding:12px 14px; border:1px solid #E8E7E0;">
+          <div style="font-size:13px; font-weight:600; color:#1A1916;">🧩 Second Brain</div>
+          <div style="font-size:11px; color:#888780; margin-top:2px;">$27</div>
+        </div>
+        <div style="background:#F1EFE8; border-radius:8px; padding:12px 14px; border:1px solid #E8E7E0;">
+          <div style="font-size:13px; font-weight:600; color:#1A1916;">💰 Personal Finance</div>
+          <div style="font-size:11px; color:#888780; margin-top:2px;">$15</div>
+        </div>
+        <div style="background:#F1EFE8; border-radius:8px; padding:12px 14px; border:1px solid #E8E7E0;">
+          <div style="font-size:13px; font-weight:600; color:#1A1916;">💪 Health &amp; Fitness</div>
+          <div style="font-size:11px; color:#888780; margin-top:2px;">$12</div>
+        </div>
+        <div style="background:#F1EFE8; border-radius:8px; padding:12px 14px; border:1px solid #E8E7E0;">
+          <div style="font-size:13px; font-weight:600; color:#1A1916;">🏡 Airbnb Manager</div>
+          <div style="font-size:11px; color:#888780; margin-top:2px;">$37</div>
+        </div>
+        <div style="background:#F1EFE8; border-radius:8px; padding:12px 14px; border:1px solid #E8E7E0;">
+          <div style="font-size:13px; font-weight:600; color:#1A1916;">📐 Architecture Hub</div>
+          <div style="font-size:11px; color:#888780; margin-top:2px;">$37</div>
+        </div>
+        <div style="background:#F1EFE8; border-radius:8px; padding:12px 14px; border:1px solid #E8E7E0;">
+          <div style="font-size:13px; font-weight:600; color:#1A1916;">🏢 B2B Operations</div>
+          <div style="font-size:11px; color:#888780; margin-top:2px;">$39</div>
+        </div>
+      </div>
+
+      <!-- Comparison Table -->
+      <div style="border-top:1px solid #E8E7E0; padding-top:28px; margin-bottom:28px;">
+        <table style="width:100%; border-collapse:collapse; font-size:14px;">
+          <thead>
+            <tr>
+              <th style="padding:12px 16px; text-align:left; background:#F1EFE8; border-radius:8px 0 0 0; color:#888780; font-weight:600; font-size:12px; letter-spacing:1px; text-transform:uppercase;"></th>
+              <th style="padding:12px 16px; text-align:center; background:#F1EFE8; color:#888780; font-weight:600; font-size:12px; letter-spacing:1px; text-transform:uppercase;">Buying individually</th>
+              <th style="padding:12px 16px; text-align:center; background:#1A1916; border-radius:0 8px 0 0; color:#FAFAF8; font-weight:600; font-size:12px; letter-spacing:1px; text-transform:uppercase;">Complete Bundle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:12px 16px; border-bottom:1px solid #E8E7E0; color:#5F5E5A;">Templates included</td>
+              <td style="padding:12px 16px; border-bottom:1px solid #E8E7E0; text-align:center; color:#1A1916;">14 separate purchases</td>
+              <td style="padding:12px 16px; border-bottom:1px solid #E8E7E0; text-align:center; background:#F4F4F2; font-weight:600; color:#1A1916;">All 14 in one ✅</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 16px; border-bottom:1px solid #E8E7E0; color:#5F5E5A;">Total cost</td>
+              <td style="padding:12px 16px; border-bottom:1px solid #E8E7E0; text-align:center; color:#1A1916; text-decoration:line-through;">$370+</td>
+              <td style="padding:12px 16px; border-bottom:1px solid #E8E7E0; text-align:center; background:#F4F4F2; font-weight:700; color:#1A1916; font-size:18px;">$79</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 16px; border-bottom:1px solid #E8E7E0; color:#5F5E5A;">You save</td>
+              <td style="padding:12px 16px; border-bottom:1px solid #E8E7E0; text-align:center; color:#888780;">—</td>
+              <td style="padding:12px 16px; border-bottom:1px solid #E8E7E0; text-align:center; background:#F4F4F2; font-weight:700; color:#1A1916;">$291 💰</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 16px; border-bottom:1px solid #E8E7E0; color:#5F5E5A;">Future templates</td>
+              <td style="padding:12px 16px; border-bottom:1px solid #E8E7E0; text-align:center; color:#888780;">Pay separately</td>
+              <td style="padding:12px 16px; border-bottom:1px solid #E8E7E0; text-align:center; background:#F4F4F2; font-weight:600; color:#1A1916;">Free updates ✅</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 16px; color:#5F5E5A;">Setup guide</td>
+              <td style="padding:12px 16px; text-align:center; color:#888780;">Per template</td>
+              <td style="padding:12px 16px; text-align:center; background:#F4F4F2; border-radius:0 0 8px 0; font-weight:600; color:#1A1916;">All-in-one PDF ✅</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="text-align:center;">
+        <p style="color:#888780; font-size:13px; margin:0 0 24px;">Instant download · Works on free Notion plan · Yours forever</p>
+        <a href="https://notionkitsai.gumroad.com/l/llfiyn" target="_blank" style="display:inline-block; background:#1A1916; color:#FAFAF8; padding:16px 40px; border-radius:50px; font-size:16px; font-weight:600; text-decoration:none;">Get the Complete Bundle — $79 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <p class="section-label">How it works</p>
+    <h2 class="section-title">From blank page to<br>running system in minutes</h2>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-title">Describe your work</div>
+        <div class="step-desc">Type your job or daily workflow in plain English. No tech knowledge needed — just describe what you actually do each day.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-title">AI designs your workspace</div>
+        <div class="step-desc">The AI generates a custom Notion structure — every page, database, and property — built specifically for your role. Instantly, for free.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-title">Get the premium kit</div>
+        <div class="step-desc">Love the structure? Buy the premium kit — fully pre-built, filled with example data, ready to duplicate into your Notion in one click.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-title">Run your whole life</div>
+        <div class="step-desc">Everything in one place. Clients, projects, invoices, habits, tasks — no more switching between 5 apps. One workspace, total clarity.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NICHES -->
+<section id="niches" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <p class="section-label">Available kits</p>
+    <h2 class="section-title">Built for your specific role</h2>
+    <p class="section-sub" style="margin-bottom:0">Every kit is designed for a specific job — not a generic template, a system that fits exactly what you do.</p>
+    <div class="niches-grid">
+      <div class="niche-card" onclick="window.location='#kits'">
+        <div class="niche-icon">🎨</div>
+        <div class="niche-name">Freelancer</div>
+        <div class="niche-desc">CRM + invoicing</div>
+      </div>
+      <div class="niche-card" onclick="window.location='#kits'">
+        <div class="niche-icon">🏠</div>
+        <div class="niche-name">Real estate</div>
+        <div class="niche-desc">Leads + listings</div>
+      </div>
+      <div class="niche-card" onclick="window.location='#kits'">
+        <div class="niche-icon">🎬</div>
+        <div class="niche-name">Creator</div>
+        <div class="niche-desc">Videos + deals</div>
+      </div>
+      <div class="niche-card" onclick="window.location='#kits'">
+        <div class="niche-icon">🧠</div>
+        <div class="niche-name">ADHD</div>
+        <div class="niche-desc">Focus + habits</div>
+      </div>
+      <div class="niche-card" onclick="window.location='#kits'">
+        <div class="niche-icon">📚</div>
+        <div class="niche-name">Student</div>
+        <div class="niche-desc">Study + exams</div>
+      </div>
+      <div class="niche-card" onclick="window.location='#kits'">
+        <div class="niche-icon">🏥</div>
+        <div class="niche-name">Nurse</div>
+        <div class="niche-desc">Patients + shifts</div>
+      </div>
+      <div class="niche-card" onclick="window.location='#kits'">
+        <div class="niche-icon">🎨</div>
+        <div class="niche-name">Creative OS</div>
+        <div class="niche-desc">8 hub system</div>
+      </div>
+      <div class="niche-card" onclick="window.location='#kits'">
+        <div class="niche-icon">🧠</div>
+        <div class="niche-name">Second Brain</div>
+        <div class="niche-desc">PARA method</div>
+      </div>
+      <div class="niche-card" onclick="window.location='#kits'">
+        <div class="niche-icon">💰</div>
+        <div class="niche-name">Personal Finance</div>
+        <div class="niche-desc">Budget + savings</div>
+      </div>
+      <div class="niche-card" onclick="window.location='#kits'">
+        <div class="niche-icon">💪</div>
+        <div class="niche-name">Health & Fitness</div>
+        <div class="niche-desc">Workouts + habits</div>
+      </div>
+      <div class="niche-card" onclick="window.location='#kits'">
+        <div class="niche-icon">🏡</div>
+        <div class="niche-name">Airbnb Host</div>
+        <div class="niche-desc">Properties + bookings</div>
+      </div>
+      <div class="niche-card" onclick="window.location='#kits'">
+        <div class="niche-icon">🏗️</div>
+        <div class="niche-name">Architecture</div>
+        <div class="niche-desc">Projects + fees</div>
+      </div>
+      <div class="niche-card" onclick="window.location='#kits'">
+        <div class="niche-icon">🏢</div>
+        <div class="niche-name">B2B Business</div>
+        <div class="niche-desc">CRM + operations</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container" style="text-align:center">
+    <p class="section-label">Pricing</p>
+    <h2 class="section-title">Simple, honest pricing</h2>
+    <p class="section-sub" style="margin:0 auto">The free tool stays free forever. Premium kits are a one-time payment — no subscriptions, no renewals, ever.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <p class="pricing-tier">Free</p>
+        <p class="pricing-price">$0</p>
+        <p class="pricing-note">Forever free · No account needed</p>
+        <ul class="pricing-features">
+          <li><span class="feat-check">✓</span> AI workspace generator</li>
+          <li><span class="feat-check">✓</span> Custom page & property suggestions</li>
+          <li><span class="feat-check">✓</span> Setup tip for your role</li>
+          <li><span class="feat-check">✓</span> Unlimited generations</li>
+          <li><span class="feat-x">✗</span> Pre-built Notion file</li>
+          <li><span class="feat-x">✗</span> Example data filled in</li>
+          <li><span class="feat-x">✗</span> PDF setup guide</li>
+        </ul>
+        <a href="#tool" class="pricing-btn free">Try free now</a>
+      </div>
+      <div class="pricing-card featured">
+        <p class="pricing-tier" style="color:var(--teal)">Premium kits</p>
+        <p class="pricing-price">$27–37</p>
+        <p class="pricing-note">One-time · Lifetime updates included</p>
+        <ul class="pricing-features">
+          <li><span class="feat-check">✓</span> Everything in Free</li>
+          <li><span class="feat-check">✓</span> Ready-to-duplicate Notion file</li>
+          <li><span class="feat-check">✓</span> Pre-filled with example data</li>
+          <li><span class="feat-check">✓</span> 5+ database views pre-built</li>
+          <li><span class="feat-check">✓</span> PDF setup guide included</li>
+          <li><span class="feat-check">✓</span> Built-in how-to-use guide page</li>
+          <li><span class="feat-check">✓</span> Lifetime updates free</li>
+        </ul>
+        <a href="#kits" class="pricing-btn paid">Browse all kits ↓</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- KITS -->
+<section id="kits" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container" style="text-align:center">
+    <p class="section-label">Available now</p>
+    <h2 class="section-title">Choose your kit</h2>
+    <p class="section-sub" style="margin:0 auto 40px">Each kit is built specifically for your role — fully pre-built, example data included, ready in 60 seconds.</p>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; max-width:1100px; margin:0 auto;">
+
+      <div class="pricing-card featured" style="text-align:left">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-size:26px;">🎨</span>
+          <div>
+            <p style="font-size:12px; font-weight:500; color:var(--teal); text-transform:uppercase; letter-spacing:0.06em; margin:0;">Freelancer</p>
+            <p style="font-size:15px; font-weight:500; color:var(--ink); margin:0;">Freelance Business OS</p>
+          </div>
+        </div>
+        <p style="font-size:13px; color:var(--ink2); margin-bottom:14px; line-height:1.6;">Replaces HoneyBook, Trello, FreshBooks and Toggl in one Notion workspace.</p>
+        <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:18px;">
+          <p style="font-size:13px; color:var(--ink2);">✓ Client CRM &nbsp;✓ Project Pipeline</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Invoice Tracker &nbsp;✓ Time Log</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Task Board</p>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <p style="font-size:26px; font-weight:500; color:var(--ink); margin:0;">$27</p>
+          <a href="https://notionkitsai.gumroad.com/l/ausljl" target="_blank" class="pricing-btn paid" style="width:auto; padding:9px 18px; display:inline-block;">Get this kit →</a>
+        </div>
+      </div>
+
+      <div class="pricing-card" style="text-align:left; border:1.5px solid var(--border);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-size:26px;">🏠</span>
+          <div>
+            <p style="font-size:12px; font-weight:500; color:var(--amber); text-transform:uppercase; letter-spacing:0.06em; margin:0;">Real estate</p>
+            <p style="font-size:15px; font-weight:500; color:var(--ink); margin:0;">Real Estate Agent CRM</p>
+          </div>
+        </div>
+        <p style="font-size:13px; color:var(--ink2); margin-bottom:14px; line-height:1.6;">Replaces Follow Up Boss and LionDesk with a simple all-in-one Notion CRM.</p>
+        <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:18px;">
+          <p style="font-size:13px; color:var(--ink2);">✓ Lead Tracker &nbsp;✓ Property Listings</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Deal Pipeline &nbsp;✓ Open Houses</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Commission Tracker</p>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <p style="font-size:26px; font-weight:500; color:var(--ink); margin:0;">$37</p>
+          <a href="https://notionkitsai.gumroad.com/l/moxnlf" target="_blank" class="pricing-btn paid" style="width:auto; padding:9px 18px; display:inline-block;">Get this kit →</a>
+        </div>
+      </div>
+
+      <div class="pricing-card" style="text-align:left; border:1.5px solid var(--border);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-size:26px;">🎬</span>
+          <div>
+            <p style="font-size:12px; font-weight:500; color:var(--teal); text-transform:uppercase; letter-spacing:0.06em; margin:0;">Content creator</p>
+            <p style="font-size:15px; font-weight:500; color:var(--ink); margin:0;">Content Creator OS</p>
+          </div>
+        </div>
+        <p style="font-size:13px; color:var(--ink2); margin-bottom:14px; line-height:1.6;">Manage videos, brand deals, analytics and equipment across all platforms.</p>
+        <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:18px;">
+          <p style="font-size:13px; color:var(--ink2);">✓ Content Pipeline &nbsp;✓ Brand Deals</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Content Ideas &nbsp;✓ Analytics</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Equipment & Assets</p>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <p style="font-size:26px; font-weight:500; color:var(--ink); margin:0;">$27</p>
+          <a href="https://notionkitsai.gumroad.com/l/gpedjf" target="_blank" class="pricing-btn paid" style="width:auto; padding:9px 18px; display:inline-block;">Get this kit →</a>
+        </div>
+      </div>
+
+      <div class="pricing-card" style="text-align:left; border:1.5px solid var(--border);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-size:26px;">🧠</span>
+          <div>
+            <p style="font-size:12px; font-weight:500; color:var(--amber); text-transform:uppercase; letter-spacing:0.06em; margin:0;">ADHD</p>
+            <p style="font-size:15px; font-weight:500; color:var(--ink); margin:0;">ADHD Productivity System</p>
+          </div>
+        </div>
+        <p style="font-size:13px; color:var(--ink2); margin-bottom:14px; line-height:1.6;">A system designed for the ADHD brain — simple, flexible and forgiving.</p>
+        <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:18px;">
+          <p style="font-size:13px; color:var(--ink2);">✓ Daily Planner &nbsp;✓ Habit Tracker</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Focus Sessions &nbsp;✓ Brain Dump</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Weekly Review</p>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <p style="font-size:26px; font-weight:500; color:var(--ink); margin:0;">$19</p>
+          <a href="https://notionkitsai.gumroad.com/l/npuksg" target="_blank" class="pricing-btn paid" style="width:auto; padding:9px 18px; display:inline-block;">Get this kit →</a>
+        </div>
+      </div>
+
+      <div class="pricing-card" style="text-align:left; border:1.5px solid var(--border);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-size:26px;">📚</span>
+          <div>
+            <p style="font-size:12px; font-weight:500; color:var(--teal); text-transform:uppercase; letter-spacing:0.06em; margin:0;">Student</p>
+            <p style="font-size:15px; font-weight:500; color:var(--ink); margin:0;">Student OS</p>
+          </div>
+        </div>
+        <p style="font-size:13px; color:var(--ink2); margin-bottom:14px; line-height:1.6;">Track assignments, prep for exams and organize notes. Never miss a deadline.</p>
+        <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:18px;">
+          <p style="font-size:13px; color:var(--ink2);">✓ Assignment Tracker &nbsp;✓ Exam Prep</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Study Sessions &nbsp;✓ Class Notes</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Weekly Schedule</p>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <p style="font-size:26px; font-weight:500; color:var(--ink); margin:0;">$17</p>
+          <a href="https://notionkitsai.gumroad.com/l/dgjklf" target="_blank" class="pricing-btn paid" style="width:auto; padding:9px 18px; display:inline-block;">Get this kit →</a>
+        </div>
+      </div>
+
+      <div class="pricing-card" style="text-align:left; border:1.5px solid var(--border);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-size:26px;">🏥</span>
+          <div>
+            <p style="font-size:12px; font-weight:500; color:var(--amber); text-transform:uppercase; letter-spacing:0.06em; margin:0;">Nurse</p>
+            <p style="font-size:15px; font-weight:500; color:var(--ink); margin:0;">Nurse & Healthcare OS</p>
+          </div>
+        </div>
+        <p style="font-size:13px; color:var(--ink2); margin-bottom:14px; line-height:1.6;">Patient log, medications, handovers, CPD tracking and shift schedule.</p>
+        <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:18px;">
+          <p style="font-size:13px; color:var(--ink2);">✓ Patient Care Log &nbsp;✓ Medication Log</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Shift Handover &nbsp;✓ CPD Tracker</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Shift Schedule</p>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <p style="font-size:26px; font-weight:500; color:var(--ink); margin:0;">$27</p>
+          <a href="https://notionkitsai.gumroad.com/l/bukyqi" target="_blank" class="pricing-btn paid" style="width:auto; padding:9px 18px; display:inline-block;">Get this kit →</a>
+        </div>
+      </div>
+
+    </div>
+
+      <div class="pricing-card" style="text-align:left; border:1.5px solid var(--border);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-size:26px;">🎨</span>
+          <div>
+            <p style="font-size:12px; font-weight:500; color:var(--teal); text-transform:uppercase; letter-spacing:0.06em; margin:0;">Creative business</p>
+            <p style="font-size:15px; font-weight:500; color:var(--ink); margin:0;">Creative Business OS</p>
+          </div>
+        </div>
+        <p style="font-size:13px; color:var(--ink2); margin-bottom:14px; line-height:1.6;">8 hubs — clients, projects, finance, marketing, goals and proposals.</p>
+        <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:18px;">
+          <p style="font-size:13px; color:var(--ink2);">✓ Client Hub &nbsp;✓ Project Hub</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Finance Hub &nbsp;✓ Marketing Hub</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Proposals &amp; Contracts</p>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <p style="font-size:26px; font-weight:500; color:var(--ink); margin:0;">$37</p>
+          <a href="https://notionkitsai.gumroad.com/l/bmxkm" target="_blank" class="pricing-btn paid" style="width:auto; padding:9px 18px; display:inline-block;">Get this kit →</a>
+        </div>
+      </div>
+
+      <div class="pricing-card" style="text-align:left; border:1.5px solid var(--border);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-size:26px;">🧠</span>
+          <div>
+            <p style="font-size:12px; font-weight:500; color:var(--amber); text-transform:uppercase; letter-spacing:0.06em; margin:0;">Productivity</p>
+            <p style="font-size:15px; font-weight:500; color:var(--ink); margin:0;">Second Brain</p>
+          </div>
+        </div>
+        <p style="font-size:13px; color:var(--ink2); margin-bottom:14px; line-height:1.6;">Based on PARA method. Capture everything, find anything, think clearly.</p>
+        <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:18px;">
+          <p style="font-size:13px; color:var(--ink2);">✓ Inbox &nbsp;✓ Knowledge Base</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Ideas Vault &nbsp;✓ Projects</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Areas &amp; Archive</p>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <p style="font-size:26px; font-weight:500; color:var(--ink); margin:0;">$27</p>
+          <a href="https://notionkitsai.gumroad.com/l/gmeofv" target="_blank" class="pricing-btn paid" style="width:auto; padding:9px 18px; display:inline-block;">Get this kit →</a>
+        </div>
+      </div>
+
+      <div class="pricing-card" style="text-align:left; border:1.5px solid var(--border);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-size:26px;">💰</span>
+          <div>
+            <p style="font-size:12px; font-weight:500; color:var(--teal); text-transform:uppercase; letter-spacing:0.06em; margin:0;">Personal finance</p>
+            <p style="font-size:15px; font-weight:500; color:var(--ink); margin:0;">Personal Finance Tracker</p>
+          </div>
+        </div>
+        <p style="font-size:13px; color:var(--ink2); margin-bottom:14px; line-height:1.6;">Budget, income, expenses, savings goals and subscriptions in one place.</p>
+        <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:18px;">
+          <p style="font-size:13px; color:var(--ink2);">✓ Monthly Budget &nbsp;✓ Income Tracker</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Expense Log &nbsp;✓ Savings Goals</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Subscriptions</p>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <p style="font-size:26px; font-weight:500; color:var(--ink); margin:0;">$15</p>
+          <a href="https://notionkitsai.gumroad.com/l/gsebwx" target="_blank" class="pricing-btn paid" style="width:auto; padding:9px 18px; display:inline-block;">Get this kit →</a>
+        </div>
+      </div>
+
+      <div class="pricing-card" style="text-align:left; border:1.5px solid var(--border);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-size:26px;">💪</span>
+          <div>
+            <p style="font-size:12px; font-weight:500; color:var(--amber); text-transform:uppercase; letter-spacing:0.06em; margin:0;">Health &amp; fitness</p>
+            <p style="font-size:15px; font-weight:500; color:var(--ink); margin:0;">Health &amp; Fitness Tracker</p>
+          </div>
+        </div>
+        <p style="font-size:13px; color:var(--ink2); margin-bottom:14px; line-height:1.6;">Workouts, habits, nutrition, goals and weekly check-ins. Stop starting over.</p>
+        <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:18px;">
+          <p style="font-size:13px; color:var(--ink2);">✓ Workout Log &nbsp;✓ Habit Tracker</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Nutrition Log &nbsp;✓ Health Goals</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Weekly Check-in</p>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <p style="font-size:26px; font-weight:500; color:var(--ink); margin:0;">$12</p>
+          <a href="https://notionkitsai.gumroad.com/l/joxfwm" target="_blank" class="pricing-btn paid" style="width:auto; padding:9px 18px; display:inline-block;">Get this kit →</a>
+        </div>
+      </div>
+
+      <div class="pricing-card" style="text-align:left; border:1.5px solid var(--border);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-size:26px;">🏡</span>
+          <div>
+            <p style="font-size:12px; font-weight:500; color:var(--teal); text-transform:uppercase; letter-spacing:0.06em; margin:0;">Airbnb host</p>
+            <p style="font-size:15px; font-weight:500; color:var(--ink); margin:0;">Airbnb Property Manager</p>
+          </div>
+        </div>
+        <p style="font-size:13px; color:var(--ink2); margin-bottom:14px; line-height:1.6;">Properties, bookings, cleaning, finances and reviews. Run rentals like a pro.</p>
+        <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:18px;">
+          <p style="font-size:13px; color:var(--ink2);">✓ Property Listings &nbsp;✓ Bookings</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Cleaning &amp; Maintenance</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Finance &nbsp;✓ Guest Reviews</p>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <p style="font-size:26px; font-weight:500; color:var(--ink); margin:0;">$37</p>
+          <a href="https://notionkitsai.gumroad.com/l/ubkaiz" target="_blank" class="pricing-btn paid" style="width:auto; padding:9px 18px; display:inline-block;">Get this kit →</a>
+        </div>
+      </div>
+
+      <div class="pricing-card" style="text-align:left; border:1.5px solid var(--border);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-size:26px;">🏗️</span>
+          <div>
+            <p style="font-size:12px; font-weight:500; color:var(--amber); text-transform:uppercase; letter-spacing:0.06em; margin:0;">Architecture</p>
+            <p style="font-size:15px; font-weight:500; color:var(--ink); margin:0;">Architecture Project Hub</p>
+          </div>
+        </div>
+        <p style="font-size:13px; color:var(--ink2); margin-bottom:14px; line-height:1.6;">Projects, clients, drawing register, fees and consultants.</p>
+        <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:18px;">
+          <p style="font-size:13px; color:var(--ink2);">✓ Project Hub &nbsp;✓ Client Tracker</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Drawing Register &nbsp;✓ Fee Tracker</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Consultants</p>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <p style="font-size:26px; font-weight:500; color:var(--ink); margin:0;">$37</p>
+          <a href="https://notionkitsai.gumroad.com/l/jsdoun" target="_blank" class="pricing-btn paid" style="width:auto; padding:9px 18px; display:inline-block;">Get this kit →</a>
+        </div>
+      </div>
+
+      <div class="pricing-card" style="text-align:left; border:1.5px solid var(--border);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="font-size:26px;">🏢</span>
+          <div>
+            <p style="font-size:12px; font-weight:500; color:var(--teal); text-transform:uppercase; letter-spacing:0.06em; margin:0;">B2B business</p>
+            <p style="font-size:15px; font-weight:500; color:var(--ink); margin:0;">B2B Professional Operations</p>
+          </div>
+        </div>
+        <p style="font-size:13px; color:var(--ink2); margin-bottom:14px; line-height:1.6;">CRM, operations, team, revenue and meetings. One system for everything.</p>
+        <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:18px;">
+          <p style="font-size:13px; color:var(--ink2);">✓ CRM Pipeline &nbsp;✓ Operations Hub</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Team Directory &nbsp;✓ Revenue</p>
+          <p style="font-size:13px; color:var(--ink2);">✓ Meeting Notes</p>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <p style="font-size:26px; font-weight:500; color:var(--ink); margin:0;">$39</p>
+          <a href="https://notionkitsai.gumroad.com/l/lcfqac" target="_blank" class="pricing-btn paid" style="width:auto; padding:9px 18px; display:inline-block;">Get this kit →</a>
+        </div>
+      </div>
+
+    </div>
+    <p style="font-size:13px; color:var(--ink3); margin-top:20px;">14 kits available · More coming soon</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="background: var(--surface); border-top: 1px solid var(--border);">
+  <div class="container" style="text-align:center">
+    <p class="section-label">FAQ</p>
+    <h2 class="section-title">Questions answered</h2>
+    <div class="faq-list" style="text-align:left">
+      <div class="faq-item">
+        <p class="faq-q">Do I need a Notion account?</p>
+        <p class="faq-a">Yes — Notion is free to sign up at notion.so. The free Notion plan is enough to use all our templates. You don't need a paid Notion subscription.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">What exactly do I get in the premium kit?</p>
+        <p class="faq-a">A fully built Notion workspace file you duplicate with one click. It comes pre-filled with example data so you see exactly how it works, with multiple views already set up — board, calendar, table — plus a PDF setup guide and a built-in how-to-use page inside the workspace.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">Can I preview all kits for free?</p>
+        <p class="faq-a">Yes — all 6 kit previews are completely free with no signup needed. Click any niche to see the pages and database structure inside each kit before buying.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">What if my job isn't listed?</p>
+        <p class="faq-a">Email us at notionkits001@gmail.com and we'll build a custom kit for your niche. New kits are added regularly — Content Creator, ADHD, Student and Nurse kits are all available now.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">Is this a subscription?</p>
+        <p class="faq-a">No. Previewing kits is always free. Each premium kit is a one-time payment — $17 to $37 depending on the niche. You own it forever and get all future updates at no extra cost.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p style="margin-bottom:8px">
+      <a href="#tool">Try free</a> · <a href="#pricing">Pricing</a> · <a href="mailto:notionkits001@gmail.com">Contact</a>
+    </p>
+    <p>© 2026 NotionKits.co — Built with ♥ and Claude AI</p>
+  </div>
+</footer>
+
+<script>
+const KITS = {
+  freelancer: {
+    name: "🎨 Freelance Business OS", price: "$27",
+    link: "https://notionkitsai.gumroad.com/l/ausljl",
+    pages: [
+      { icon: "👥", name: "Client CRM", visibleHeaders: ["Client name", "Status"], show: "table" },
+      { icon: "📁", name: "Project Pipeline", show: "nameonly" },
+      { icon: "💰", name: "Invoice Tracker", show: "blur" },
+      { icon: "⏱️", name: "Time Log", show: "blur" },
+      { icon: "📋", name: "Task Board", show: "blur" }
+    ]
+  },
+  realestate: {
+    name: "🏠 Real Estate Agent CRM", price: "$37",
+    link: "https://notionkitsai.gumroad.com/l/moxnlf",
+    pages: [
+      { icon: "🎯", name: "Lead Tracker", visibleHeaders: ["Lead name", "Status"], show: "table" },
+      { icon: "🏠", name: "Property Listings", show: "nameonly" },
+      { icon: "💼", name: "Deal Pipeline", show: "blur" },
+      { icon: "🚪", name: "Open Houses", show: "blur" },
+      { icon: "💰", name: "Commission Tracker", show: "blur" }
+    ]
+  },
+  creator: {
+    name: "🎬 Content Creator OS", price: "$27",
+    link: "https://notionkitsai.gumroad.com/l/gpedjf",
+    pages: [
+      { icon: "📹", name: "Content Pipeline", visibleHeaders: ["Video title", "Platform"], show: "table" },
+      { icon: "🤝", name: "Brand Deals", show: "nameonly" },
+      { icon: "💡", name: "Content Ideas", show: "blur" },
+      { icon: "📊", name: "Monthly Analytics", show: "blur" },
+      { icon: "🎮", name: "Equipment & Assets", show: "blur" }
+    ]
+  },
+  adhd: {
+    name: "🧠 ADHD Productivity System", price: "$19",
+    link: "https://notionkitsai.gumroad.com/l/npuksg",
+    pages: [
+      { icon: "📋", name: "Daily Planner", visibleHeaders: ["Task", "Time block"], show: "table" },
+      { icon: "✅", name: "Habit Tracker", show: "nameonly" },
+      { icon: "⏱️", name: "Focus Sessions", show: "blur" },
+      { icon: "🧠", name: "Brain Dump", show: "blur" },
+      { icon: "📊", name: "Weekly Review", show: "blur" }
+    ]
+  },
+  student: {
+    name: "📚 Student OS", price: "$17",
+    link: "https://notionkitsai.gumroad.com/l/dgjklf",
+    pages: [
+      { icon: "📝", name: "Assignment Tracker", visibleHeaders: ["Assignment", "Subject"], show: "table" },
+      { icon: "📖", name: "Exam Prep", show: "nameonly" },
+      { icon: "⏱️", name: "Study Sessions", show: "blur" },
+      { icon: "📓", name: "Class Notes", show: "blur" },
+      { icon: "📅", name: "Weekly Schedule", show: "blur" }
+    ]
+  },
+  nurse: {
+    name: "🏥 Nurse & Healthcare OS", price: "$27",
+    link: "https://notionkitsai.gumroad.com/l/bukyqi",
+    pages: [
+      { icon: "👥", name: "Patient Care Log", visibleHeaders: ["Patient ID", "Room"], show: "table" },
+      { icon: "💊", name: "Medication Log", show: "nameonly" },
+      { icon: "🔄", name: "Shift Handover", show: "blur" },
+      { icon: "📚", name: "CPD Tracker", show: "blur" },
+      { icon: "📅", name: "Shift Schedule", show: "blur" }
+    ]
+  },
+  creative: {
+    name: "🎨 Creative Business OS", price: "$37",
+    link: "https://notionkitsai.gumroad.com/l/bmxkm",
+    pages: [
+      { icon: "👥", name: "Client Hub", visibleHeaders: ["Client name", "Status"], show: "table" },
+      { icon: "📁", name: "Project Hub", show: "nameonly" },
+      { icon: "💰", name: "Finance Hub", show: "blur" },
+      { icon: "📣", name: "Marketing Hub", show: "blur" },
+      { icon: "📋", name: "Proposals & Contracts", show: "blur" }
+    ]
+  },
+  secondbrain: {
+    name: "🧠 Second Brain", price: "$27",
+    link: "https://notionkitsai.gumroad.com/l/gmeofv",
+    pages: [
+      { icon: "📥", name: "Inbox", visibleHeaders: ["Name", "Type"], show: "table" },
+      { icon: "📚", name: "Knowledge Base", show: "nameonly" },
+      { icon: "💡", name: "Ideas Vault", show: "blur" },
+      { icon: "📁", name: "Projects", show: "blur" },
+      { icon: "🗄️", name: "Archive", show: "blur" }
+    ]
+  },
+  finance: {
+    name: "💰 Personal Finance Tracker", price: "$15",
+    link: "https://notionkitsai.gumroad.com/l/gsebwx",
+    pages: [
+      { icon: "📊", name: "Monthly Budget", visibleHeaders: ["Name", "Category"], show: "table" },
+      { icon: "💵", name: "Income Tracker", show: "nameonly" },
+      { icon: "💸", name: "Expense Log", show: "blur" },
+      { icon: "🎯", name: "Savings Goals", show: "blur" },
+      { icon: "🔄", name: "Subscriptions", show: "blur" }
+    ]
+  },
+  fitness: {
+    name: "💪 Health & Fitness Tracker", price: "$12",
+    link: "https://notionkitsai.gumroad.com/l/joxfwm",
+    pages: [
+      { icon: "🏋️", name: "Workout Log", visibleHeaders: ["Name", "Type"], show: "table" },
+      { icon: "✅", name: "Habit Tracker", show: "nameonly" },
+      { icon: "🥗", name: "Nutrition Log", show: "blur" },
+      { icon: "🎯", name: "Health Goals", show: "blur" },
+      { icon: "📊", name: "Weekly Check-in", show: "blur" }
+    ]
+  },
+  airbnb: {
+    name: "🏡 Airbnb Property Manager", price: "$37",
+    link: "https://notionkitsai.gumroad.com/l/ubkaiz",
+    pages: [
+      { icon: "🏠", name: "Property Listings", visibleHeaders: ["Name", "Location"], show: "table" },
+      { icon: "📅", name: "Bookings", show: "nameonly" },
+      { icon: "🧹", name: "Cleaning & Maintenance", show: "blur" },
+      { icon: "💰", name: "Finance Tracker", show: "blur" },
+      { icon: "⭐", name: "Guest Reviews", show: "blur" }
+    ]
+  },
+  architecture: {
+    name: "🏗️ Architecture Project Hub", price: "$37",
+    link: "https://notionkitsai.gumroad.com/l/jsdoun",
+    pages: [
+      { icon: "📐", name: "Project Hub", visibleHeaders: ["Name", "Client"], show: "table" },
+      { icon: "👥", name: "Client Tracker", show: "nameonly" },
+      { icon: "📋", name: "Drawing Register", show: "blur" },
+      { icon: "💰", name: "Fee Tracker", show: "blur" },
+      { icon: "🤝", name: "Consultants", show: "blur" }
+    ]
+  },
+  b2b: {
+    name: "🏢 B2B Professional Operations", price: "$39",
+    link: "https://notionkitsai.gumroad.com/l/lcfqac",
+    pages: [
+      { icon: "🎯", name: "CRM Pipeline", visibleHeaders: ["Name", "Company"], show: "table" },
+      { icon: "⚙️", name: "Operations Hub", show: "nameonly" },
+      { icon: "👥", name: "Team Directory", show: "blur" },
+      { icon: "💰", name: "Revenue Tracker", show: "blur" },
+      { icon: "📝", name: "Meeting Notes", show: "blur" }
+    ]
+  }
+};
+
+function showKit(niche) {
+  const kit = KITS[niche];
+  document.getElementById('kitTitle').textContent = kit.name;
+  document.getElementById('upsellBtn').textContent = 'Get ' + kit.name.split(' ').slice(1).join(' ') + ' — ' + kit.price + ' →';
+  document.getElementById('upsellBtn').href = kit.link;
+
+  const grid = document.getElementById('pagesGrid');
+  grid.innerHTML = '';
+
+  kit.pages.forEach(page => {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:#ffffff; border:1px solid #e8e7e0; border-radius:10px; overflow:hidden;';
+
+    if (page.show === 'table') {
+      const totalCols = 5;
+      const hiddenCount = totalCols - page.visibleHeaders.length;
+      const headerCells = page.visibleHeaders.map(h =>
+        '<td style="padding:8px 12px; font-weight:500; color:#6b6a63; border-bottom:1px solid #e8e7e0; white-space:nowrap; font-size:12px;">' + h + '</td>'
+      ).join('') + Array(hiddenCount).fill(
+        '<td style="padding:8px 12px; border-bottom:1px solid #e8e7e0;"><div style="height:10px; background:#e8e7e0; border-radius:4px; width:80%; filter:blur(3px);"></div></td>'
+      ).join('');
+      const blurRow = '<tr>' + Array(totalCols).fill(0).map((_, i) =>
+        '<td style="padding:8px 12px; border-bottom:1px solid #e8e7e0;"><div style="height:10px; background:#e8e7e0; border-radius:4px; width:' + [85,70,90,65,75][i] + '%; filter:blur(3px);"></div></td>'
+      ).join('') + '</tr>';
+
+      card.innerHTML = '<div style="padding:10px 16px; display:flex; align-items:center; gap:10px; border-bottom:1px solid #e8e7e0;">' +
+        '<span style="font-size:16px;">' + page.icon + '</span>' +
+        '<span style="font-size:14px; font-weight:500; color:#1a1916;">' + page.name + '</span>' +
+        '<span style="margin-left:auto; font-size:11px; background:#e1f5ee; color:#0f6e56; padding:3px 10px; border-radius:6px;">Free preview</span>' +
+        '</div><div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:12px;">' +
+        '<tr style="background:#fafaf8;">' + headerCells + '</tr>' + blurRow + blurRow +
+        '</table></div>' +
+        '<div style="padding:8px 16px; background:#fafaf8; border-top:1px solid #e8e7e0; font-size:11px; color:#9b9a93;">🔒 Full columns and all data unlocked after purchase</div>';
+
+    } else if (page.show === 'nameonly') {
+      card.innerHTML = '<div style="padding:13px 16px; display:flex; align-items:center; gap:10px;">' +
+        '<span style="font-size:18px;">' + page.icon + '</span>' +
+        '<span style="font-size:15px; font-weight:500; color:#1a1916;">' + page.name + '</span>' +
+        '<div style="margin-left:auto; font-size:11px; color:#9b9a93; background:#fafaf8; padding:4px 10px; border-radius:6px; border:1px solid #e8e7e0;">🔒 Purchase to unlock</div>' +
+        '</div>';
+    } else {
+      card.innerHTML = '<div style="padding:13px 16px; display:flex; align-items:center; gap:10px;">' +
+        '<span style="font-size:18px; filter:blur(4px); user-select:none;">' + page.icon + '</span>' +
+        '<span style="font-size:15px; font-weight:500; color:#1a1916; filter:blur(5px); user-select:none; pointer-events:none;">' + page.name + '</span>' +
+        '<div style="margin-left:auto; font-size:11px; color:#9b9a93; background:#fafaf8; padding:4px 10px; border-radius:6px; border:1px solid #e8e7e0; flex-shrink:0;">🔒 Purchase to unlock</div>' +
+        '</div>';
+    }
+
+    grid.appendChild(card);
+  });
+
+  document.getElementById('resultArea').style.display = 'block';
+  document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+async function generate() {
+  const input = document.getElementById('userInput').value.trim();
+  if (!input) {
+    document.getElementById('userInput').focus();
+    return;
+  }
+
+  document.getElementById('resultArea').style.display = 'none';
+  document.getElementById('loadingState').style.display = 'block';
+  document.getElementById('generateBtn').disabled = true;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': 'YOUR-API-KEY-HERE', 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: `You are a Notion workspace designer. Given a user's job or situation, generate a highly specific custom Notion workspace.
+
+User: "${input}"
+
+Respond ONLY with valid JSON, no markdown, no backticks:
+{
+  "workspaceName": "short name for their workspace (5 words max)",
+  "pages": [
+    {
+      "icon": "one relevant emoji",
+      "name": "Page name (3 words max)",
+      "description": "One sentence — what this page tracks or helps with",
+      "properties": ["Property 1", "Property 2", "Property 3"]
+    }
+  ],
+  "tip": "One very specific, practical tip for this exact role"
+}
+
+Rules: 4-5 pages. Make it highly specific to their situation, not generic. Properties should be real database columns they'd use daily.`
+        }]
+      })
+    });
+
+    const data = await response.json();
+    let text = data.content.map(i => i.text || '').join('');
+    text = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(text);
+    renderResult(parsed);
+  } catch (e) {
+    renderResult(getFallback(input));
+  } finally {
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('generateBtn').disabled = false;
+  }
+}
+
+function getFallback(input) {
+  return {
+    workspaceName: "My Notion workspace",
+    pages: [
+      { icon: "📋", name: "Task board", description: "Track all your daily and weekly tasks with status and priority", properties: ["Status", "Priority", "Due date"] },
+      { icon: "👥", name: "Contacts", description: "Keep track of important people, clients, and follow-ups", properties: ["Role", "Last contact", "Notes"] },
+      { icon: "📁", name: "Projects", description: "Manage active projects from kickoff to completion", properties: ["Stage", "Deadline", "Budget"] },
+      { icon: "💰", name: "Finance tracker", description: "Log income, expenses, and outstanding payments", properties: ["Amount", "Type", "Status"] }
+    ],
+    tip: "Start every morning by opening your Task board and updating statuses from the day before."
+  };
+}
+
+function renderResult(data) {
+  document.getElementById('workspaceName').textContent = data.workspaceName || 'Your workspace';
+
+  const grid = document.getElementById('pagesGrid');
+  grid.innerHTML = '';
+  data.pages.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'page-card';
+    div.innerHTML = `
+      <span class="page-icon">${p.icon}</span>
+      <div>
+        <p class="page-name">${p.name}</p>
+        <p class="page-desc">${p.description}</p>
+        <div class="page-props">${p.properties.map(prop => `<span class="prop-tag">${prop}</span>`).join('')}</div>
+      </div>`;
+    grid.appendChild(div);
+  });
+
+  if (data.tip) {
+    document.getElementById('tipText').textContent = data.tip;
+    document.getElementById('tipBox').style.display = 'flex';
+  }
+
+  document.getElementById('resultArea').style.display = 'block';
+  document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+</script>
+</body>
+</html>
