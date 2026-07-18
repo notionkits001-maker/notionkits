@@ -277,7 +277,7 @@ input,textarea{font-family:inherit;outline:none;border:none}
 <input class="lk-inp" id="ki" type="text" placeholder="FOCAL-XXXX-XXXX-XXXX" maxlength="20" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
 <div class="lk-err" id="ke">Invalid key.</div>
 </div>
-<button class="btn-go" id="btn-unlock" onclick="checkKey()">Unlock FOCAL</button>
+<button class="btn-go" id="btn-unlock">Unlock FOCAL</button>
 <button class="btn-bio" id="btn-bio">🔐 Use Face ID / Fingerprint</button>
 <div class="lk-foot">🔒 Your data never leaves your device</div>
 </div>
@@ -683,7 +683,7 @@ window._togBD=function(){S.bdOn=!S.bdOn;renderFocus();if(S.bdOn){try{var ctx=new
 function renderRoutine(){
   var html='<div class="card-t" style="margin-bottom:6px">💊 Medications</div>';
   html+='<div class="add-med"><input id="med-inp" type="text" placeholder="Add medication..."><button onclick="window._addMed()">+</button></div>';
-  if(S.meds.length)S.meds.forEach(function(m){html+='<div class="med" onclick="window._takeMed(''+m.id+'')"><div class="med-ck '+(m.tk?'tk':'')+'"><svg viewBox="0 0 12 12" stroke-linecap="round"><polyline points="2,6 5,9 10,3"/></svg></div><div class="med-info"><div class="med-nm">'+esc(m.name)+'</div><div class="med-st">'+(m.tk?'✅ Taken':'Tap to mark')+'</div></div><button class="tsk-del" onclick="event.stopPropagation();window._delMed(''+m.id+'')"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';});
+  if(S.meds.length)S.meds.forEach(function(m){html+='<div class="med" onclick="window._takeMed(\''+m.id+'\')">'+'<div class="med-ck '+(m.tk?'tk':'')+'"><svg viewBox="0 0 12 12" stroke-linecap="round"><polyline points="2,6 5,9 10,3"/></svg></div><div class="med-info"><div class="med-nm">'+esc(m.name)+'</div><div class="med-st">'+(m.tk?'\u2705 Taken':'Tap to mark')+'</div></div>'+'<button class="tsk-del" onclick="event.stopPropagation();window._delMed(\''+m.id+'\')">'+'<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';});
   else html+='<div style="font-size:12px;color:var(--text3);padding:6px 0 10px">No medications added.</div>';
 
   html+='<div class="divider"></div>';
@@ -697,9 +697,10 @@ function rtSection(list, title, items){
   var emojis=['💧','🏃','🍽','☕','📖','🧘','🚿','🛏','📝','💊','🎵','🌿','✅','⭐','🔥'];
   var html='<div class="card-t" style="margin:8px 0 6px">'+title+'</div>';
   items.forEach(function(r){
-    html+='<div class="rt" onclick="window._togRt(''+list+'',''+r.id+'')"><span class="rt-emoji">'+r.e+'</span><span class="rt-txt" style="'+(r.d?'text-decoration:line-through;color:#999':'')+'">'+esc(r.t)+'</span><div class="rt-ck '+(r.d?'done':'')+'"><svg viewBox="0 0 10 10" stroke-linecap="round"><polyline points="1,5 4,8 9,2"/></svg></div><button class="tsk-del" onclick="event.stopPropagation();window._delRt(''+list+'',''+r.id+'')" style="margin-left:4px"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';
+    var rid=r.id,rlist=list;
+    html+='<div class="rt" onclick="window._togRt(&quot;'+rlist+'&quot;,&quot;'+rid+'&quot;)"><span class="rt-emoji">'+r.e+'</span><span class="rt-txt" style="'+(r.d?'text-decoration:line-through;color:#999':'')+'">'+esc(r.t)+'</span><div class="rt-ck '+(r.d?'done':'')+'"><svg viewBox="0 0 10 10" stroke-linecap="round"><polyline points="1,5 4,8 9,2"/></svg></div><button class="tsk-del" onclick="event.stopPropagation();window._delRt(&quot;'+rlist+'&quot;,&quot;'+rid+'&quot;)" style="margin-left:4px"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';
   });
-  html+='<div style="display:flex;gap:6px;margin-top:8px"><input id="rt-inp-'+list+'" type="text" class="at-inp" placeholder="Add custom step..." style="font-size:13px;padding:9px 11px"><button class="at-add" onclick="window._addRt(''+list+'')" style="padding:9px 13px;font-size:16px">+</button></div>';
+  html+='<div style="display:flex;gap:6px;margin-top:8px"><input id="rt-inp-'+list+'" type="text" class="at-inp" placeholder="Add custom step..." style="font-size:13px;padding:9px 11px"><button class="at-add" onclick="window._addRt(&quot;'+list+'&quot;)" style="padding:9px 13px;font-size:16px">+</button></div>';
   return html;
 }
 
