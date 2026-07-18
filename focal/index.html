@@ -760,33 +760,7 @@ document.getElementById('key-input').addEventListener('keydown', function(e){
 });
 
 // ===== KEY CHECK =====
-async function checkKey(){
-  const input = document.getElementById('key-input').value.trim();
-  if(!input){
-    document.getElementById('key-input').classList.add('error');
-    document.getElementById('key-error').textContent = 'Please enter your license key.';
-    document.getElementById('key-error').classList.add('show');
-    return;
-  }
-  const hash = (await sha256(input)).substring(0,16);
-  if(VALID_HASHES.includes(hash)){
-    document.querySelector('.lock-logo').classList.add('unlocking');
-    spawnParticles();
-    await new Promise(r=>setTimeout(r, 500));
-    state.unlocked = true;
-    state.activatedKey = input;
-    saveState();
-    if(!state.onboarded){ showScreen('onboarding-screen'); }
-    else { showScreen('home-screen'); initHome(); }
-  } else {
-    document.getElementById('key-input').classList.add('error');
-    const ki = document.getElementById('key-input');
-    ki.style.animation='none'; ki.offsetHeight; ki.style.animation='stuckShake 0.3s ease';
-    setTimeout(()=>ki.style.animation='', 300);
-    document.getElementById('key-error').textContent = 'Invalid key. Check your setup guide and try again.';
-    document.getElementById('key-error').classList.add('show');
-  }
-}
+// key validation handled by checkKey() below
 
 // ===== BIOMETRIC =====
 async function tryBiometric(){
