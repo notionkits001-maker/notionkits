@@ -354,6 +354,18 @@ input,textarea{font-family:inherit;outline:none;border:none}
 (function(){
 "use strict";
 
+// ===== QUICK UNLOCK CHECK =====
+// If already unlocked, skip lock screen immediately
+try{
+  var _qs=localStorage.getItem('focal_s');
+  if(_qs){var _qp=JSON.parse(_qs);
+    if(_qp.unlocked){
+      var _ql=document.getElementById('lock');
+      if(_ql){_ql.classList.remove('active');_ql.style.display='none';}
+    }
+  }
+}catch(e){}
+
 // ===== VALID KEYS (obfuscated) =====
 var VK=["6DT25RQI834F","3RJY5746PE7E","F88FDX60B61R","7NMO5AN6L7KW","EUBQBY9MIK3M","VZMEI8ORQ2QE","DIH8V78MZ8N8","LTP4MV2LXT9Q","4ZOSFBI3TS70","3SORUOGI7XZE","08TAGBXGKD8K","1PCVRDF3RZI9","21JXRXO6QLSS","5XULLYSHAXH7","30CSJR1VUWQV","FMZ8MKM5QBYK","AD31JT5IZSTR","PELTDA8IT6NX","VL85E39TVTU2","XM0G6UGG25CL"];
 
