@@ -496,7 +496,7 @@ function renderHome(){
   var dayPct=Math.round(((h*60+now.getMinutes())/1440)*100);
   var hrsLeft=Math.max(0,Math.round((1440-(h*60+now.getMinutes()))/60));
   // XP
-  var xp=S.xp||0,lvl=Math.floor(xp/100)+1,prog=xp%100;
+  var xp=S.xp||0,lvl=Math.floor(xp/500)+1,prog=xp%500;
   var labels=['','Focus Starter','Getting There','Brain Boss','Flow Master','FOCAL Legend'];
   // stats
   var doneT=S.tasks.filter(function(t){return t.done&&t.dd===today;}).length;
@@ -517,7 +517,7 @@ function renderHome(){
   // Day progress
   html+='<div class="day-bar-wrap"><div class="day-bar-top"><span class="day-bar-label">⏳ Day progress</span><span class="day-bar-time">'+hrsLeft+'h left</span></div><div class="day-track"><div class="day-fill" style="width:'+dayPct+'%"></div></div></div>';
   // XP
-  html+='<div class="xp-wrap"><div class="xp-top"><span>Level '+lvl+' — '+(labels[lvl]||'FOCAL Legend')+'</span><strong>'+xp+' / '+(lvl*100)+' XP</strong></div><div class="xp-track"><div class="xp-fill" style="width:'+prog+'%"></div></div></div>';
+  html+='<div class="xp-wrap"><div class="xp-top"><span>Level '+lvl+' — '+(labels[lvl]||'FOCAL Legend')+'</span><strong>'+xp+' / '+(lvl*500)+' XP</strong></div><div class="xp-track"><div class="xp-fill" style="width:'+prog+'%"></div></div></div>';
   // Energy
   html+='<div class="en-card"><div class="en-label">How\'s your battery today?</div><div class="en-row"><div class="en-btn '+(S.energy==='crashed'?'sel-crashed':'')+'" onclick="window._setE(\'crashed\')"><span>🔴</span><span>Crashed</span></div><div class="en-btn '+(S.energy==='low'?'sel-low':'')+'" onclick="window._setE(\'low\')"><span>🟡</span><span>Low</span></div><div class="en-btn '+(S.energy==='okay'?'sel-okay':'')+'" onclick="window._setE(\'okay\')"><span>🟢</span><span>Okay</span></div></div></div>';
   // Brain state
