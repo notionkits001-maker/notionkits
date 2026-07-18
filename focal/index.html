@@ -344,7 +344,12 @@ input,textarea{font-family:inherit;outline:none;border:none}
 <nav class="bnav" id="nav-progress"></nav>
 </div>
 
-<!-- MODALS -->
+<!-- PROGRESS -->
+<div id="progress" class="screen">
+<div class="shdr"><h1>Progress</h1><p>Your FOCAL journey.</p></div>
+<div class="scroll-area" id="progress-scroll"></div>
+<nav class="bnav" id="nav-progress"></nav>
+</div><!-- MODALS -->
 <div class="modal" id="rescue-modal"><div class="modal-sheet"><div class="modal-handle"></div><div class="modal-title">🚨 Rescue Mode</div><div class="modal-sub">Here's one task and 3 micro-steps to start.</div><div class="rescue-big"><p id="rescue-name">...</p></div><div id="rescue-steps"></div><button class="modal-close" onclick="window._closeM('rescue-modal')">Got it — I'll start now ✊</button></div></div>
 <div class="modal" id="stuck-modal"><div class="modal-sheet"><div class="modal-handle"></div><div class="modal-title">😶 Just one tiny step</div><div class="modal-sub">Don't think. Just do this.</div><div class="stuck-big" id="stuck-text">...</div><button class="stuck-close" onclick="window._closeM('stuck-modal')">OK, I can do that ✓</button></div></div>
 <div class="modal" id="impulse-modal"><div class="modal-sheet"><div class="modal-handle"></div><div class="modal-title">🛒 Impulse Check</div><div class="modal-sub">Type what you want to buy. If you still want it in 24 hours, go for it.</div><input class="ob-inp" id="imp-input" placeholder="What do you want to buy?"><button class="ob-btn" id="imp-add">Wait 24 Hours ⏰</button><button class="ob-skip" onclick="window._closeM('impulse-modal')">Cancel</button></div></div>
@@ -415,9 +420,7 @@ function navHTML(){
   return '<button class="nb NHome" onclick="window._go(\'home\')"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>'
   +'<button class="nb NTasks" onclick="window._go(\'tasks\')"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><span>Tasks</span></button>'
   +'<button class="nb NFocus" onclick="window._go(\'focus\')"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Focus</span></button>'
-  +'<button class="nb NRoutine" onclick="window._go(\'routine\')"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0016.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 002 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></svg><span>Routine</span></button>';
-}
-
+  +'<button class="nb NProgress" onclick="window._go(\'progress\')"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>Progress</span></button>';
 function renderNavs(active){
   var map={home:'NHome',tasks:'NTasks',focus:'NFocus',routine:'NRoutine',progress:'NProgress'};
   ['nav-home','nav-tasks','nav-focus','nav-routine','nav-progress'].forEach(function(id){
@@ -900,18 +903,7 @@ function renderProgress(){
 // ===== INIT =====
 if(S.unlocked){if(!S.onboarded)go('onboard');else go('home');}
 setInterval(function(){var fill=document.querySelector('.day-fill');var timeEl=document.querySelector('.day-bar-time');if(fill&&timeEl){var n=new Date(),hh=n.getHours(),mm=n.getMinutes();fill.style.width=Math.round(((hh*60+mm)/1440)*100)+'%';timeEl.textContent=Math.max(0,Math.round((1440-(hh*60+mm))/60))+'h left';}},60000);
-// Update day progress bar every minute
-setInterval(function(){
-  var fill=document.querySelector('.day-fill');
-  var timeEl=document.querySelector('.day-bar-time');
-  if(fill&&timeEl){
-    var n=new Date(),h2=n.getHours(),m=n.getMinutes();
-    var pct=Math.round(((h2*60+m)/1440)*100);
-    var left=Math.max(0,Math.round((1440-(h2*60+m))/60));
-    fill.style.width=pct+'%';
-    timeEl.textContent=left+'h left';
-  }
-},60000);
+
 
 // Add missing CSS animation
 var style=document.createElement('style');
