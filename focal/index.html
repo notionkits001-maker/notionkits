@@ -337,6 +337,13 @@ input,textarea{font-family:inherit;outline:none;border:none}
 <nav class="bnav" id="nav-routine"></nav>
 </div>
 
+<!-- PROGRESS -->
+<div id="progress" class="screen">
+<div class="shdr"><h1>Progress</h1><p>Your FOCAL journey.</p></div>
+<div class="scroll-area" id="progress-scroll"></div>
+<nav class="bnav" id="nav-progress"></nav>
+</div>
+
 <!-- MODALS -->
 <div class="modal" id="rescue-modal"><div class="modal-sheet"><div class="modal-handle"></div><div class="modal-title">🚨 Rescue Mode</div><div class="modal-sub">Here's one task and 3 micro-steps to start.</div><div class="rescue-big"><p id="rescue-name">...</p></div><div id="rescue-steps"></div><button class="modal-close" onclick="window._closeM('rescue-modal')">Got it — I'll start now ✊</button></div></div>
 <div class="modal" id="stuck-modal"><div class="modal-sheet"><div class="modal-handle"></div><div class="modal-title">😶 Just one tiny step</div><div class="modal-sub">Don't think. Just do this.</div><div class="stuck-big" id="stuck-text">...</div><button class="stuck-close" onclick="window._closeM('stuck-modal')">OK, I can do that ✓</button></div></div>
@@ -396,6 +403,7 @@ function go(name){
   curScreen=name;
   var fab=$('qc-fab');
   if(fab)fab.style.display=(name==='home'||name==='tasks')?'flex':'none';
+  if(name==='progress')renderProgress();
   if(name==='home')renderHome();
   if(name==='tasks')renderTasks();
   if(name==='focus')renderFocus();
@@ -411,8 +419,8 @@ function navHTML(){
 }
 
 function renderNavs(active){
-  var map={home:'NHome',tasks:'NTasks',focus:'NFocus',routine:'NRoutine'};
-  ['nav-home','nav-tasks','nav-focus','nav-routine'].forEach(function(id){
+  var map={home:'NHome',tasks:'NTasks',focus:'NFocus',routine:'NRoutine',progress:'NProgress'};
+  ['nav-home','nav-tasks','nav-focus','nav-routine','nav-progress'].forEach(function(id){
     $(id).innerHTML=navHTML();
   });
   document.querySelectorAll('.'+map[active]).forEach(function(b){b.classList.add('on');});
@@ -526,8 +534,9 @@ function renderHome(){
   bStates.forEach(function(bs){var v=bs.split(' ')[1];html+='<div class="bs-btn '+(S.brainState===v?'sel':'')+'" onclick="window._setBS(\''+v+'\')">'+bs+'</div>';});
   html+='</div></div>';
   // Rescue
-  var rescueText=S.brainState==='Stuck'?'😶 I\'m Stuck — Help Me Start':S.brainState==='Scattered'?'🌀 Too Scattered — Focus Me':S.energy==='crashed'?'🆘 I\'m Crashed — Help Me Start':S.energy==='low'?'⚡ Low Energy — One Thing?':'🚨 I\'m Overwhelmed — Rescue Me';
-html+='<button class="rescue-btn" onclick="window._rescue()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>'+rescueText+'</span></button>';
+  var rescueText=S.brainState==='Overwhelmed'?'🚨 I\'m Overwhelmed — Rescue Me':S.brainState==='Stuck'?'😶 I\'m Stuck — Help Me Start':S.brainState==='Scattered'?'🌀 Too Scattered — Focus Me':S.energy==='crashed'?'🆘 I\'m Crashed — Help Me Start':S.energy==='low'?'⚡ Low Energy — What\'s One Thing?':'🚨 I\'m Overwhelmed — Rescue Me';
+  html+='<button class="rescue-btn" onclick="window._rescue()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>'+rescueText+'</span></button>';
+  // Stats
   html+='<div class="stats"><div class="st"><div class="st-v or">'+(S.streak||0)+'</div><div class="st-l">streak 🔥'+(S.streakFrozen?' ❄️':'')+'</div></div><div class="st"><div class="st-v gr">'+doneT+'</div><div class="st-l">done today</div></div><div class="st"><div class="st-v">'+pendT+'</div><div class="st-l">tasks left</div></div></div>';
   // Today task
   if(pending.length){
@@ -568,20 +577,59 @@ html+='<button class="rescue-btn" onclick="window._rescue()"><svg width="20" hei
 function updateStreak(){
   var today=new Date().toDateString();
   if(S.lastCheckin!==today){
-    var yesterday=new Date(Date.now()-86400000).toDateString();
-    if(S.lastCheckin===yesterday){S.streak=(S.streak||0)+1;S.streakFrozen=false;}
+    // Save yesterday's data to history before resetting
+    if(S.lastCheckin){
+      if(!S.history)S.history=[];
+      var yesterday=new Date(Date.now()-86400000).toDateString();
+      var yDone=S.tasks.filter(function(t){return t.done&&t.dd===S.lastCheckin;}).length;
+      var ySess=(S.sessions||[]).filter(function(s){return new Date(s).toDateString()===S.lastCheckin;}).length;
+      var existing=S.history.find(function(h){return h.date===S.lastCheckin;});
+      if(!existing){S.history.push({date:S.lastCheckin,tasks:yDone,sessions:ySess,xp:S.xp||0,streak:S.streak||0});}
+      if(S.history.length>30)S.history=S.history.slice(-30);// keep 30 days
+    }
+    var yest=new Date(Date.now()-86400000).toDateString();
+    if(S.lastCheckin===yest){S.streak=(S.streak||0)+1;S.streakFrozen=false;}
     else if(S.lastCheckin){
       var twoDays=new Date(Date.now()-2*86400000).toDateString();
-      if(S.lastCheckin===twoDays&&!S.streakFrozen){S.streakFrozen=true;}// freeze once
+      if(S.lastCheckin===twoDays&&!S.streakFrozen){S.streakFrozen=true;}
       else{S.streak=0;S.streakFrozen=false;}
     }
     S.lastCheckin=today;save();
   }
 }
 
-var _si={crashed:0,low:0,okay:0};
-var _as={crashed:[['Just open the document / app','Read the first line only','Write your name at the top'],['Open one tab only','Set a 5-min timer','Do anything related to the task'],['Get water first','Sit at your desk','Open the file and stare for 60 seconds'],['Turn off notifications','Open the file','Type one sentence'],['Put on music','Pick the smallest sub-task','Do only that one thing']],low:[['Open everything you need','Do just the first 5 minutes','Set a 10-min timer and start'],['Write what done looks like','Start with the easiest part','Set a 15-min timer'],['Clear your desk first','Pick task 1 only','Work until timer goes off'],['Make a quick list of steps','Do step 1 only','Check in after 10 minutes'],['Close all other tabs','Commit to 15 minutes','Take a break after']],okay:[['Clear your workspace first','Set a 25-min focus timer','Complete the main part'],['Write your 3 priorities','Start with the hardest one','No phone until done'],['Set a 25-min Pomodoro','Work with full focus','5-min break then repeat'],['Block distractions first','Work in 25-min sprints','Review progress after each'],['List sub-tasks first','Tackle them in order','Celebrate each one done']]};
-function genSteps(energy){var key=energy||'okay';if(!_as[key])key='okay';var idx=_si[key]||0;var steps=_as[key][idx%_as[key].length];_si[key]=(idx+1)%_as[key].length;return steps;}
+var _stepIdx={crashed:0,low:0,okay:0};
+var _allSteps={
+  crashed:[
+    ['Just open the document / app','Read the first line only','Write your name at the top'],
+    ['Open one tab only','Set a 5-min timer','Do literally anything related to the task'],
+    ['Get a glass of water first','Sit at your desk','Open the task and stare at it for 60 seconds'],
+    ['Turn off notifications','Open the file','Type one sentence or write one number'],
+    ['Put on music or silence','Pick the smallest sub-task','Do only that one thing'],
+  ],
+  low:[
+    ['Open everything you need','Do just the first 5 minutes','Set a 10-min timer and start'],
+    ['Write what done looks like','Start with the easiest part','Set a 15-min timer'],
+    ['Clear your desk first','Pick task #1 only','Work until the timer goes off'],
+    ['Make a quick list of steps','Do step 1 only','Check in after 10 minutes'],
+    ['Close all other tabs','Commit to 15 minutes','Take a break after'],
+  ],
+  okay:[
+    ['Clear your workspace first','Set a 25-min focus timer','Complete the main part'],
+    ['Write your 3 priorities','Start with the hardest one','No phone until done'],
+    ['Set a 25-min Pomodoro','Work with full focus','5-min break then repeat'],
+    ['Block distractions first','Work in 25-min sprints','Review progress after each'],
+    ['List sub-tasks first','Tackle them in order','Celebrate each one done'],
+  ]
+};
+function genSteps(energy){
+  var key=energy||'okay';
+  if(!_allSteps[key])key='okay';
+  var idx=_stepIdx[key]||0;
+  var steps=_allSteps[key][idx % _allSteps[key].length];
+  _stepIdx[key]=(idx+1) % _allSteps[key].length;
+  return steps;
+}
 
 window._setE=function(l){S.energy=l;save();renderHome();};
 window._setBS=function(v){S.brainState=v;save();renderHome();};
@@ -636,10 +684,39 @@ function tskHTML(t){
 window._tm=function(m){S.taskMode=m;renderTasks();};
 window._addT=function(){var inp=$('t-inp');var v=inp.value.trim();if(!v)return;S.tasks.push({id:Date.now()+'',text:v,done:false,tag:'today',dd:null});inp.value='';save();renderTasks();renderHome();};
 window._bdump=function(){var d=$('bd').value.trim();if(!d)return;var lines=d.split('\n').filter(function(l){return l.trim();});lines.forEach(function(l,i){S.tasks.push({id:Date.now()+'_'+i,text:l.trim(),done:false,tag:i===0?'today':'later',dd:null});});$('bd').value='';save();renderTasks();renderHome();cel('🧠','Brain dumped!');addXP(15);};
-window._togT=function(id){var t=S.tasks.find(function(x){return x.id===id;});if(!t)return;t.done=!t.done;t.dd=t.done?new Date().toDateString():null;save();if(t.done){cel('✅','Task complete!');addXP(25);}renderTasks();renderHome();};
+window._togT=function(id){var t=S.tasks.find(function(x){return x.id===id;});if(!t)return;t.done=!t.done;t.dd=t.done?new Date().toDateString():null;save();if(t.done){var rem=S.tasks.filter(function(x){return !x.done;}).length;if(rem===0&&S.tasks.length>0){setTimeout(bigCelebration,300);}else{cel('✅','Task complete!');addXP(25);}}renderTasks();renderHome();};
 window._delT=function(id){S.tasks=S.tasks.filter(function(x){return x.id!==id;});save();renderTasks();renderHome();};
-function completeTask(id){var t=S.tasks.find(function(x){return x.id===id;});if(!t||t.done)return;t.done=true;t.dd=new Date().toDateString();save();addXP(25);var rem=S.tasks.filter(function(x){return !x.done;}).length;if(rem===0&&S.tasks.length>0){setTimeout(bigCelebration,300);}else{cel('🔥','Nailed it!');}renderHome();}
-function bigCelebration(){spawnConfetti();spawnConfetti();var msgs=['ALL DONE! You crushed it today!','Every task complete! Legend!','Full clear! You are unstoppable!','All tasks done! Rest now, you earned it!'];var msg=msgs[Math.floor(Math.random()*msgs.length)];var o=document.createElement('div');o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px';o.innerHTML='<div style="font-size:80px">🏆</div><div style="font-size:22px;font-weight:800;color:#fff;text-align:center;line-height:1.3">'+msg+'</div><div style="font-size:14px;color:rgba(255,255,255,.6);text-align:center">Come back tomorrow — streak continues 🔥</div><div style="display:flex;gap:8px;margin-top:8px"><div style="background:var(--accent);border-radius:10px;padding:6px 14px;font-size:13px;font-weight:700;color:#fff">+50 XP BONUS</div><div style="background:var(--success);border-radius:10px;padding:6px 14px;font-size:13px;font-weight:700;color:#fff">Streak: '+(S.streak||1)+' days</div></div><button onclick="this.parentElement.remove()" style="margin-top:16px;background:#fff;border:none;border-radius:10px;padding:12px 28px;font-size:16px;font-weight:700;cursor:pointer">Keep the momentum! 💪</button>';document.body.appendChild(o);addXP(50);}
+function completeTask(id){
+  var t=S.tasks.find(function(x){return x.id===id;});
+  if(!t||t.done)return;
+  t.done=true;t.dd=new Date().toDateString();save();addXP(25);
+  var remaining=S.tasks.filter(function(x){return !x.done;}).length;
+  if(remaining===0&&S.tasks.length>0){
+    // ALL DONE - big celebration
+    setTimeout(function(){bigCelebration();},300);
+  } else {
+    cel('🔥','Nailed it!');
+  }
+  renderHome();
+}
+
+function bigCelebration(){
+  spawnConfetti();spawnConfetti();
+  var msgs=['🏆 ALL DONE! You crushed it today!','🎯 Every task complete! Legend!','🌟 Full clear! You are unstoppable!','🔥 All tasks done! Rest now, you earned it!'];
+  var msg=msgs[Math.floor(Math.random()*msgs.length)];
+  var overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px';
+  overlay.innerHTML='<div style="font-size:80px;animation:celBounce .6s ease-in-out infinite">🏆</div>'
+    +'<div style="font-size:22px;font-weight:800;color:#fff;text-align:center;padding:0 24px;line-height:1.3">'+msg+'</div>'
+    +'<div style="font-size:14px;color:rgba(255,255,255,.6);text-align:center">Come back tomorrow — streak continues 🔥</div>'
+    +'<div style="display:flex;gap:8px;margin-top:8px">'
+    +'<div style="background:var(--accent);border-radius:10px;padding:6px 14px;font-size:13px;font-weight:700;color:#fff">+50 XP BONUS</div>'
+    +'<div style="background:var(--success);border-radius:10px;padding:6px 14px;font-size:13px;font-weight:700;color:#fff">Streak: '+(S.streak||1)+' days 🔥</div>'
+    +'</div>'
+    +'<button onclick="this.parentElement.remove()" style="margin-top:16px;background:#fff;border:none;border-radius:10px;padding:12px 28px;font-size:16px;font-weight:700;cursor:pointer">Keep the momentum! 💪</button>';
+  document.body.appendChild(overlay);
+  addXP(50);
+}
 
 // ===== FOCUS =====
 function renderFocus(){
@@ -755,8 +832,86 @@ $('qc-fab').addEventListener('click',function(){$('qc-bar').classList.add('show'
 $('qc-go').addEventListener('click',function(){var v=$('qc-inp').value.trim();if(!v)return;S.tasks.push({id:Date.now()+'',text:v,done:false,tag:'today',dd:null});$('qc-inp').value='';save();$('qc-bar').classList.remove('show');$('qc-fab').style.display='flex';renderHome();cel('⚡','Captured!');addXP(5);});
 $('qc-inp').addEventListener('keydown',function(e){if(e.key==='Enter')$('qc-go').click();if(e.key==='Escape'){$('qc-bar').classList.remove('show');$('qc-fab').style.display='flex';}});
 
+// ===== PROGRESS SCREEN =====
+function renderProgress(){
+  var xp=S.xp||0;
+  var lvl=Math.floor(xp/500)+1;
+  var levelNames=['','Focus Starter','Getting There','Brain Boss','Flow Master','Deep Thinker','Task Crusher','Mind Master','Focus Pro','Elite Brain','FOCAL Legend'];
+  var levelEmojis=['','🌱','📈','🧠','🌊','💭','⚡','🎯','🏆','🔥','👑'];
+
+  // Level map
+  var html='<div class="card"><div class="card-t">🗺️ Your Level Map</div>';
+  html+='<div style="font-size:13px;color:var(--text3);margin-bottom:12px">You are on Level '+lvl+' — '+(levelNames[lvl]||'FOCAL Legend')+'</div>';
+
+  for(var i=1;i<=10;i++){
+    var done=i<lvl;
+    var current=i===lvl;
+    var locked=i>lvl;
+    var pct=current?Math.round((xp%500)/500*100):done?100:0;
+    var bg=done?'var(--success)':current?'var(--accent)':'var(--border)';
+    var txtCol=done||current?'#fff':'var(--text3)';
+    var border=current?'2px solid var(--accent-dark)':'2px solid transparent';
+    html+='<div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:var(--rs);background:'+(current?'var(--accent-light)':'transparent')+';margin-bottom:4px;border:'+border+'">';
+    html+='<div style="width:36px;height:36px;border-radius:50%;background:'+bg+';display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">'+( done?'✅':current?levelEmojis[i]:'🔒')+'</div>';
+    html+='<div style="flex:1">';
+    html+='<div style="font-size:13px;font-weight:700;color:'+(locked?'var(--text3)':'#111')+'">Level '+i+' — '+(levelNames[i]||'Legend')+'</div>';
+    if(current){
+      html+='<div style="height:4px;background:var(--border);border-radius:2px;margin-top:4px"><div style="height:100%;width:'+pct+'%;background:var(--accent);border-radius:2px"></div></div>';
+      html+='<div style="font-size:10px;color:var(--accent);margin-top:2px">'+xp%500+' / 500 XP ('+pct+'%)</div>';
+    } else if(done){
+      html+='<div style="font-size:10px;color:var(--success)">Completed ✓</div>';
+    } else {
+      html+='<div style="font-size:10px;color:var(--text3)">'+(i*500-xp)+' XP away</div>';
+    }
+    html+='</div></div>';
+  }
+  html+='</div>';
+
+  // Share card
+  html+='<div style="background:linear-gradient(135deg,var(--accent),#FDBA74);border-radius:var(--r);padding:16px;margin-bottom:10px;text-align:center">';
+  html+='<div style="font-size:22px;margin-bottom:6px">'+levelEmojis[lvl||1]+'</div>';
+  html+='<div style="font-size:16px;font-weight:800;color:#fff">Level '+lvl+' — '+(levelNames[lvl]||'Legend')+'</div>';
+  html+='<div style="font-size:12px;color:rgba(255,255,255,.8);margin-top:4px">'+xp+' XP · '+(S.streak||0)+' day streak · '+S.tasks.filter(function(t){return t.done;}).length+' tasks done</div>';
+  html+='<div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:6px">Share this with friends to compete 🏆</div>';
+  html+='</div>';
+
+  // Daily history
+  html+='<div class="card"><div class="card-t">📅 Daily History (last 30 days)</div>';
+  var hist=(S.history||[]).slice().reverse();
+  if(hist.length){
+    hist.forEach(function(day){
+      var d=new Date(day.date);
+      var label=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+      html+='<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">';
+      html+='<div style="font-size:12px;color:var(--text3);width:90px;flex-shrink:0">'+label+'</div>';
+      html+='<div style="flex:1;display:flex;gap:6px;flex-wrap:wrap">';
+      html+='<span style="font-size:11px;background:var(--success-light);color:var(--success);border-radius:20px;padding:2px 8px;font-weight:600">✅ '+day.tasks+' tasks</span>';
+      if(day.sessions)html+='<span style="font-size:11px;background:var(--accent-light);color:var(--accent);border-radius:20px;padding:2px 8px;font-weight:600">⏱ '+day.sessions+' sessions</span>';
+      html+='</div></div>';
+    });
+  } else {
+    html+='<div style="font-size:13px;color:var(--text3);padding:10px 0">No history yet — complete tasks to start tracking!</div>';
+  }
+  html+='</div>';
+
+  $('progress-scroll').innerHTML=html;
+}
+
 // ===== INIT =====
 if(S.unlocked){if(!S.onboarded)go('onboard');else go('home');}
+setInterval(function(){var fill=document.querySelector('.day-fill');var timeEl=document.querySelector('.day-bar-time');if(fill&&timeEl){var n=new Date(),hh=n.getHours(),mm=n.getMinutes();fill.style.width=Math.round(((hh*60+mm)/1440)*100)+'%';timeEl.textContent=Math.max(0,Math.round((1440-(hh*60+mm))/60))+'h left';}},60000);
+// Update day progress bar every minute
+setInterval(function(){
+  var fill=document.querySelector('.day-fill');
+  var timeEl=document.querySelector('.day-bar-time');
+  if(fill&&timeEl){
+    var n=new Date(),h2=n.getHours(),m=n.getMinutes();
+    var pct=Math.round(((h2*60+m)/1440)*100);
+    var left=Math.max(0,Math.round((1440-(h2*60+m))/60));
+    fill.style.width=pct+'%';
+    timeEl.textContent=left+'h left';
+  }
+},60000);
 
 // Add missing CSS animation
 var style=document.createElement('style');
