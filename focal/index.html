@@ -20,9 +20,9 @@ input,textarea{font-family:inherit;outline:none;border:none}
 --danger:#DC2626;--danger-light:#FEF2F2;
 --r:14px;--rs:10px;--rx:8px;
 }
-#app{height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative;overflow:hidden}
-.screen{display:none;flex-direction:column;height:100%;overflow:hidden}
-.screen.active{display:flex}
+#app{height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative;overflow:hidden;background:#fff}
+.screen{display:none;flex-direction:column;position:absolute;top:0;left:0;right:0;bottom:0;background:#fff;overflow:hidden;z-index:1}
+.screen.active{display:flex;z-index:2}
 .scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 100px}
 .scroll-area::-webkit-scrollbar{display:none}
 
