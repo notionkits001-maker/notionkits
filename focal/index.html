@@ -497,7 +497,7 @@ function renderHome(){
   var hrsLeft=Math.max(0,Math.round((1440-(h*60+now.getMinutes()))/60));
   // XP
   var xp=S.xp||0,lvl=Math.floor(xp/500)+1,prog=xp%500;
-  var labels=['','Focus Starter','Getting There','Brain Boss','Flow Master','FOCAL Legend'];
+  var labels=['','Focus Starter','Getting There','Brain Boss','Flow Master','Deep Thinker','Task Crusher','Mind Master','Focus Pro','Elite Brain','FOCAL Legend'];
   // stats
   var doneT=S.tasks.filter(function(t){return t.done&&t.dd===today;}).length;
   var pendT=S.tasks.filter(function(t){return !t.done;}).length;
@@ -526,8 +526,8 @@ function renderHome(){
   bStates.forEach(function(bs){var v=bs.split(' ')[1];html+='<div class="bs-btn '+(S.brainState===v?'sel':'')+'" onclick="window._setBS(\''+v+'\')">'+bs+'</div>';});
   html+='</div></div>';
   // Rescue
-  html+='<button class="rescue-btn" onclick="window._rescue()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>I\'m Overwhelmed — Rescue Me</span></button>';
-  // Stats
+  var rescueText=S.brainState==='Stuck'?'😶 I\'m Stuck — Help Me Start':S.brainState==='Scattered'?'🌀 Too Scattered — Focus Me':S.energy==='crashed'?'🆘 I\'m Crashed — Help Me Start':S.energy==='low'?'⚡ Low Energy — One Thing?':'🚨 I\'m Overwhelmed — Rescue Me';
+html+='<button class="rescue-btn" onclick="window._rescue()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>'+rescueText+'</span></button>';
   html+='<div class="stats"><div class="st"><div class="st-v or">'+(S.streak||0)+'</div><div class="st-l">streak 🔥'+(S.streakFrozen?' ❄️':'')+'</div></div><div class="st"><div class="st-v gr">'+doneT+'</div><div class="st-l">done today</div></div><div class="st"><div class="st-v">'+pendT+'</div><div class="st-l">tasks left</div></div></div>';
   // Today task
   if(pending.length){
@@ -579,11 +579,9 @@ function updateStreak(){
   }
 }
 
-function genSteps(energy){
-  if(energy==='crashed')return['Just open the document / app','Read the first line only','Write your name at the top'];
-  if(energy==='low')return['Open everything you need','Do just the first 5 minutes','Set a 10-min timer and start'];
-  return['Clear your workspace first','Set a 25-min focus timer','Complete the main part'];
-}
+var _si={crashed:0,low:0,okay:0};
+var _as={crashed:[['Just open the document / app','Read the first line only','Write your name at the top'],['Open one tab only','Set a 5-min timer','Do anything related to the task'],['Get water first','Sit at your desk','Open the file and stare for 60 seconds'],['Turn off notifications','Open the file','Type one sentence'],['Put on music','Pick the smallest sub-task','Do only that one thing']],low:[['Open everything you need','Do just the first 5 minutes','Set a 10-min timer and start'],['Write what done looks like','Start with the easiest part','Set a 15-min timer'],['Clear your desk first','Pick task 1 only','Work until timer goes off'],['Make a quick list of steps','Do step 1 only','Check in after 10 minutes'],['Close all other tabs','Commit to 15 minutes','Take a break after']],okay:[['Clear your workspace first','Set a 25-min focus timer','Complete the main part'],['Write your 3 priorities','Start with the hardest one','No phone until done'],['Set a 25-min Pomodoro','Work with full focus','5-min break then repeat'],['Block distractions first','Work in 25-min sprints','Review progress after each'],['List sub-tasks first','Tackle them in order','Celebrate each one done']]};
+function genSteps(energy){var key=energy||'okay';if(!_as[key])key='okay';var idx=_si[key]||0;var steps=_as[key][idx%_as[key].length];_si[key]=(idx+1)%_as[key].length;return steps;}
 
 window._setE=function(l){S.energy=l;save();renderHome();};
 window._setBS=function(v){S.brainState=v;save();renderHome();};
@@ -640,7 +638,8 @@ window._addT=function(){var inp=$('t-inp');var v=inp.value.trim();if(!v)return;S
 window._bdump=function(){var d=$('bd').value.trim();if(!d)return;var lines=d.split('\n').filter(function(l){return l.trim();});lines.forEach(function(l,i){S.tasks.push({id:Date.now()+'_'+i,text:l.trim(),done:false,tag:i===0?'today':'later',dd:null});});$('bd').value='';save();renderTasks();renderHome();cel('🧠','Brain dumped!');addXP(15);};
 window._togT=function(id){var t=S.tasks.find(function(x){return x.id===id;});if(!t)return;t.done=!t.done;t.dd=t.done?new Date().toDateString():null;save();if(t.done){cel('✅','Task complete!');addXP(25);}renderTasks();renderHome();};
 window._delT=function(id){S.tasks=S.tasks.filter(function(x){return x.id!==id;});save();renderTasks();renderHome();};
-function completeTask(id){var t=S.tasks.find(function(x){return x.id===id;});if(!t||t.done)return;t.done=true;t.dd=new Date().toDateString();save();cel('🔥','Nailed it!');addXP(25);renderHome();}
+function completeTask(id){var t=S.tasks.find(function(x){return x.id===id;});if(!t||t.done)return;t.done=true;t.dd=new Date().toDateString();save();addXP(25);var rem=S.tasks.filter(function(x){return !x.done;}).length;if(rem===0&&S.tasks.length>0){setTimeout(bigCelebration,300);}else{cel('🔥','Nailed it!');}renderHome();}
+function bigCelebration(){spawnConfetti();spawnConfetti();var msgs=['ALL DONE! You crushed it today!','Every task complete! Legend!','Full clear! You are unstoppable!','All tasks done! Rest now, you earned it!'];var msg=msgs[Math.floor(Math.random()*msgs.length)];var o=document.createElement('div');o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px';o.innerHTML='<div style="font-size:80px">🏆</div><div style="font-size:22px;font-weight:800;color:#fff;text-align:center;line-height:1.3">'+msg+'</div><div style="font-size:14px;color:rgba(255,255,255,.6);text-align:center">Come back tomorrow — streak continues 🔥</div><div style="display:flex;gap:8px;margin-top:8px"><div style="background:var(--accent);border-radius:10px;padding:6px 14px;font-size:13px;font-weight:700;color:#fff">+50 XP BONUS</div><div style="background:var(--success);border-radius:10px;padding:6px 14px;font-size:13px;font-weight:700;color:#fff">Streak: '+(S.streak||1)+' days</div></div><button onclick="this.parentElement.remove()" style="margin-top:16px;background:#fff;border:none;border-radius:10px;padding:12px 28px;font-size:16px;font-weight:700;cursor:pointer">Keep the momentum! 💪</button>';document.body.appendChild(o);addXP(50);}
 
 // ===== FOCUS =====
 function renderFocus(){
