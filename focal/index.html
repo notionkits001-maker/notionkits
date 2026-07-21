@@ -6,6 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#ffffff">
+<link rel="manifest" href="/focal/manifest.json">
 <title>FOCAL — ADHD Executive Function App</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -202,9 +203,54 @@ input,textarea{font-family:inherit;outline:none;border:none}
 .empty p{font-size:13px;margin-top:6px}
 .greet{padding:16px 16px 6px;flex-shrink:0}
 .greet-name{font-size:20px;font-weight:700}.greet-date{font-size:13px;color:var(--text3);margin-top:2px}
+
+/* ===== DARK MODE ===== */
+body.dark{--bg:#111;--bg2:#1A1A1A;--bg3:#222;--border:#333;--text:#F0F0F0;--text2:#CCC;--text3:#888;--accent:#F97316;--accent-light:#2A1A0A;--success-light:#0A1F0A;--danger-light:#1F0A0A;}
+body.dark .screen,body.dark #app,body.dark .modal-sheet,body.dark .cel{background:var(--bg)}
+body.dark .card,body.dark .en-card,body.dark .day-bar-wrap,body.dark .xp-wrap,body.dark .bdc,body.dark .tt-card{background:var(--bg2);border-color:var(--border)}
+body.dark .tsk,body.dark .med,body.dark .rt,body.dark .step{background:var(--bg2)}
+body.dark .bnav{background:var(--bg);border-color:var(--border)}
+body.dark .lk-inp,body.dark .ob-inp,body.dark .at-inp,body.dark .bd-area{background:var(--bg2);border-color:var(--border);color:var(--text)}
+body.dark .btn-bio{background:var(--bg2);border-color:var(--border)}
+body.dark .modal{background:rgba(0,0,0,.7)}
+body.dark .qc-bar input{background:var(--bg2);color:var(--text)}
+.dark-toggle{position:fixed;top:12px;right:12px;z-index:999;background:var(--bg2);border:1.5px solid var(--border);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;transition:all .2s}
+.dark-toggle:active{transform:scale(.93)}
+
+/* ===== EDIT TASK ===== */
+.tsk-edit{padding:4px;opacity:.3;background:none}.tsk-edit:active{opacity:.8}
+.tsk-edit svg{width:14px;height:14px;stroke:#999;fill:none}
+.edit-bar{display:flex;gap:6px;margin-bottom:6px;animation:slideUp .2s ease}
+.edit-inp{flex:1;background:var(--bg2);border:1.5px solid var(--accent);border-radius:var(--rs);padding:10px 13px;font-size:14px;color:var(--text)}
+.edit-save{background:var(--accent);border-radius:var(--rs);padding:10px 14px;color:#fff;font-size:13px;font-weight:700}
+
+/* ===== HEATMAP ===== */
+.heatmap-wrap{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:8px}
+.hm-cell{aspect-ratio:1;border-radius:3px;cursor:pointer;position:relative}
+.hm-cell.hm0{background:var(--bg3)}
+.hm-cell.hm1{background:#FED7AA}
+.hm-cell.hm2{background:#FB923C}
+.hm-cell.hm3{background:#F97316}
+.hm-cell.hm4{background:#EA6C0A}
+.hm-day-label{font-size:8px;color:var(--text3);text-align:center}
+.hm-legend{display:flex;align-items:center;gap:4px;margin-top:6px}
+.hm-legend span{font-size:10px;color:var(--text3)}
+.hm-legend-cell{width:10px;height:10px;border-radius:2px}
+
+/* ===== HISTORY TASKS ===== */
+.hist-task{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)}
+.hist-task-txt{font-size:13px;color:var(--text2);flex:1}
+.hist-task-time{font-size:10px;color:var(--text3)}
+.hist-day-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin:10px 0 6px}
+
+/* ===== NOTIFICATION BANNER ===== */
+.notif-banner{background:var(--accent-light);border:1.5px solid var(--accent);border-radius:var(--rs);padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.notif-banner span{font-size:13px;color:var(--accent);font-weight:600;flex:1}
+.notif-btn{background:var(--accent);border-radius:var(--rx);padding:8px 12px;font-size:12px;font-weight:700;color:#fff}
 </style>
 </head>
 <body>
+<button class="dark-toggle" onclick="window._toggleDark()" id="dark-btn">🌙 Dark</button>
 <div id="app">
 <div id="lock" class="screen active" style="display:flex">
 <div class="lk-logo"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg></div>
@@ -215,7 +261,7 @@ input,textarea{font-family:inherit;outline:none;border:none}
 <input class="lk-inp" id="ki" type="text" placeholder="FOCAL-XXXX-XXXX-XXXX" maxlength="20" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
 <div class="lk-err" id="ke">Invalid key.</div>
 </div>
-<button class="btn-go" id="btn-unlock" onclick="window._ck()">Unlock FOCAL</button>
+<button class="btn-go" id="btn-unlock" onclick="checkKey()">Unlock FOCAL</button>
 <button class="btn-bio" id="btn-bio">🔐 Use Face ID / Fingerprint</button>
 <div class="lk-foot">🔒 Your data never leaves your device</div>
 </div>
@@ -325,7 +371,6 @@ $('ki').addEventListener('input',function(e){
 });
 $('ki').addEventListener('keydown',function(e){if(e.key==='Enter')checkKey();});
 $('btn-bio').addEventListener('click',tryBio);
-window._ck=function(){checkKey();};
 function checkKey(){
   var inp=$('ki').value.trim().toUpperCase();
   if(!inp){$('ki').classList.add('err');$('ke').textContent='Please enter your license key.';$('ke').classList.add('show');return;}
@@ -427,7 +472,7 @@ function updateStreak(){
       var ySess=(S.sessions||[]).filter(function(s){return new Date(s).toDateString()===S.lastCheckin;}).length;
       var existing=S.history.find(function(h){return h.date===S.lastCheckin;});
       if(!existing)S.history.push({date:S.lastCheckin,tasks:yDone,sessions:ySess,xp:S.xp||0,streak:S.streak||0});
-      if(S.history.length>30)S.history=S.history.slice(-30);
+      if(S.history.length>365)S.history=S.history.slice(-365);
     }
     var yest=new Date(Date.now()-86400000).toDateString();
     if(S.lastCheckin===yest){S.streak=(S.streak||0)+1;S.streakFrozen=false;}
@@ -487,7 +532,315 @@ function fmtTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s
 window._tt=function(type,mins){S.timerType=type;S.timerSec=mins*60;if(S.timerInt){clearInterval(S.timerInt);S.timerInt=null;S.timerOn=false;}renderFocus();};
 window._togTmr=function(){if(S.timerOn){clearInterval(S.timerInt);S.timerInt=null;S.timerOn=false;renderFocus();}else{S.timerOn=true;var total=S.timerType==='focus'?1500:S.timerType==='short'?300:900;renderFocus();S.timerInt=setInterval(function(){S.timerSec--;var td=$('td'),tc=$('tc');if(td)td.textContent=fmtTime(S.timerSec);if(tc){var pct=(1-(S.timerSec/total))*100;tc.style.background='conic-gradient(var(--accent) '+pct+'%, var(--border) 0%)';}if(S.timerSec<=0){clearInterval(S.timerInt);S.timerInt=null;S.timerOn=false;if(S.timerType==='focus'){S.sessions.push(new Date().toISOString());save();cel('⏱️','Focus session done!');addXP(30);}window._rstTmr();}},1000);}};
 window._rstTmr=function(){if(S.timerInt){clearInterval(S.timerInt);S.timerInt=null;}S.timerOn=false;var m=S.timerType==='focus'?25:S.timerType==='short'?5:15;S.timerSec=m*60;renderFocus();};
-window._togBD=function(){S.bdOn=!S.bdOn;renderFocus();if(S.bdOn){try{var ctx=new(window.AudioContext||window.webkitAudioContext)();(function tick(){if(!S.bdOn)return;var o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=800+Math.random()*400;g.gain.setValueAtTime(.03,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.05);o.start();o.stop(ctx.currentTime+.05);setTimeout(tick,200+Math.random()*600);})();}catch(e){}}};
+window._togBD=function(){S.bdOn=!S.bdOn;renderFocus();if(S.bdOn){try{var ctx=new(window.AudioContext||window.webkitAudioContext)();(function tick(){if(!S.bdOn)return;var o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=800+Math.random()*400;g.gain.setValueAtTime(.03,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.05);o.start();o.stop(ctx.currentTime+.05);setTimeout(tick,200+Math.random()*600);
+
+// ===== DARK MODE =====
+window._toggleDark = function(){
+  var isDark = document.body.classList.toggle('dark');
+  S.darkMode = isDark;
+  save();
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+};
+if(S.darkMode) { document.body.classList.add('dark'); var db=document.getElementById('dark-btn'); if(db)db.textContent='☀️ Light'; }
+
+// ===== PUSH NOTIFICATIONS =====
+function requestNotifications(){
+  if(!('Notification' in window)) return;
+  Notification.requestPermission().then(function(p){
+    if(p==='granted'){
+      S.notificationsOn=true; save();
+      scheduleNotifications();
+      renderHome();
+    }
+  });
+}
+function scheduleNotifications(){
+  if(!('serviceWorker' in navigator)) return;
+  // Morning reminder at 9am
+  var now=new Date();
+  var morning=new Date(now.getFullYear(),now.getMonth(),now.getDate(),9,0,0);
+  if(morning<now) morning.setDate(morning.getDate()+1);
+  var msUntilMorning=morning-now;
+  setTimeout(function(){
+    if(S.notificationsOn && Notification.permission==='granted'){
+      new Notification('FOCAL 🧠',{body:"Hey "+( S.name||'there')+"! How's your battery today? Let's do one thing.",icon:'/focal/icon.png'});
+    }
+    setInterval(function(){
+      if(S.notificationsOn && Notification.permission==='granted'){
+        new Notification('FOCAL 🧠',{body:'Good morning! Time to check in.',icon:'/focal/icon.png'});
+      }
+    },86400000);
+  },msUntilMorning);
+  // Evening reminder at 8pm
+  var evening=new Date(now.getFullYear(),now.getMonth(),now.getDate(),20,0,0);
+  if(evening<now) evening.setDate(evening.getDate()+1);
+  var msUntilEvening=evening-now;
+  setTimeout(function(){
+    if(S.notificationsOn && Notification.permission==='granted'){
+      new Notification('FOCAL 🌙',{body:'Wind down time. Did you do your evening routine?',icon:'/focal/icon.png'});
+    }
+    setInterval(function(){
+      if(S.notificationsOn && Notification.permission==='granted'){
+        new Notification('FOCAL 🌙',{body:'Evening check-in time. How did today go?',icon:'/focal/icon.png'});
+      }
+    },86400000);
+  },msUntilEvening);
+}
+if(S.notificationsOn && Notification.permission==='granted') scheduleNotifications();
+
+// ===== TASK COMPLETION SOUND =====
+function playDoneSound(){
+  try{
+    var ctx=new(window.AudioContext||window.webkitAudioContext)();
+    var freqs=[523,659,784];
+    freqs.forEach(function(f,i){
+      var o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);
+      o.frequency.value=f;o.type='sine';
+      g.gain.setValueAtTime(0,ctx.currentTime+i*0.1);
+      g.gain.linearRampToValueAtTime(0.15,ctx.currentTime+i*0.1+0.02);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.1+0.3);
+      o.start(ctx.currentTime+i*0.1);
+      o.stop(ctx.currentTime+i*0.1+0.3);
+    });
+  }catch(e){}
+}
+
+// ===== LEVEL UP CELEBRATION =====
+var _prevLevel=Math.floor((S.xp||0)/500)+1;
+function checkLevelUp(oldXp, newXp){
+  var oldLvl=Math.floor(oldXp/500)+1;
+  var newLvl=Math.floor(newXp/500)+1;
+  if(newLvl>oldLvl){
+    var levelNames=['','Focus Starter','Getting There','Brain Boss','Flow Master','Deep Thinker','Task Crusher','Mind Master','Focus Pro','Elite Brain','FOCAL Legend'];
+    var o=document.createElement('div');
+    o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px';
+    o.innerHTML='<div style="font-size:60px;animation:celBounce .6s ease-in-out infinite">⬆️</div>'
+      +'<div style="font-size:14px;font-weight:600;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:2px">LEVEL UP</div>'
+      +'<div style="font-size:28px;font-weight:800;color:#fff">Level '+newLvl+'</div>'
+      +'<div style="font-size:18px;color:var(--accent)">'+( levelNames[newLvl]||'FOCAL Legend')+'</div>'
+      +'<div style="font-size:13px;color:rgba(255,255,255,.5);text-align:center;margin-top:4px">You are getting better every day 🔥</div>'
+      +'<button onclick="this.parentElement.remove()" style="margin-top:16px;background:var(--accent);border:none;border-radius:10px;padding:12px 28px;font-size:16px;font-weight:700;color:#fff;cursor:pointer">Keep going 💪</button>';
+    document.body.appendChild(o);
+    spawnConfetti();spawnConfetti();
+    try{
+      var ctx=new(window.AudioContext||window.webkitAudioContext)();
+      [523,659,784,1047].forEach(function(f,i){
+        var o2=ctx.createOscillator(),g=ctx.createGain();
+        o2.connect(g);g.connect(ctx.destination);
+        o2.frequency.value=f;o2.type='sine';
+        g.gain.setValueAtTime(0,ctx.currentTime+i*0.15);
+        g.gain.linearRampToValueAtTime(0.2,ctx.currentTime+i*0.15+0.02);
+        g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.15+0.4);
+        o2.start(ctx.currentTime+i*0.15);
+        o2.stop(ctx.currentTime+i*0.15+0.4);
+      });
+    }catch(e){}
+  }
+}
+
+// Override addXP to check level up and play sound
+var _origAddXP = addXP;
+window.addXP = function(n){
+  var oldXp = S.xp||0;
+  _origAddXP(n);
+  playDoneSound();
+  checkLevelUp(oldXp, S.xp||0);
+};
+
+// ===== DAILY TASK RESET =====
+function checkDailyReset(){
+  var today = new Date().toDateString();
+  if(S.lastTaskReset !== today){
+    // Save completed tasks to history before reset
+    if(!S.taskHistory) S.taskHistory={};
+    var doneTasks = S.tasks.filter(function(t){return t.done;});
+    if(doneTasks.length && S.lastTaskReset){
+      S.taskHistory[S.lastTaskReset] = doneTasks.map(function(t){return {text:t.text,dd:t.dd};});
+    }
+    // Remove completed tasks, keep pending ones
+    S.tasks = S.tasks.filter(function(t){return !t.done;});
+    S.lastTaskReset = today;
+    save();
+  }
+}
+checkDailyReset();
+
+// ===== TASK EDITING =====
+var _editingTaskId = null;
+window._editTask = function(id){
+  _editingTaskId = id;
+  renderTasks();
+  setTimeout(function(){
+    var inp = document.getElementById('edit-inp-'+id);
+    if(inp){inp.focus();inp.select();}
+  },50);
+};
+window._saveEdit = function(id){
+  var inp = document.getElementById('edit-inp-'+id);
+  if(!inp) return;
+  var v = inp.value.trim();
+  if(!v) return;
+  var t = S.tasks.find(function(x){return x.id===id;});
+  if(t){t.text=v;save();}
+  _editingTaskId = null;
+  renderTasks();
+};
+
+// task editing handled via _editTask  
+// Patch: after renderTasks, intercept to add edit buttons
+var _baseRenderTasks = renderTasks;
+window.renderTasks = function(){
+  _baseRenderTasks();
+  // Add edit buttons to each task item
+  document.querySelectorAll('.tsk:not(.dn) .tsk-del').forEach(function(delBtn){
+    var tsk = delBtn.closest('.tsk');
+    if(!tsk || tsk.querySelector('.tsk-edit')) return;
+    var editBtn = document.createElement('button');
+    editBtn.className = 'tsk-edit';
+    editBtn.innerHTML = '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" fill="none"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+    editBtn.onclick = function(){
+      var txt = tsk.querySelector('.tsk-txt');
+      if(!txt) return;
+      var inp = document.createElement('input');
+      inp.className = 'edit-inp';
+      inp.value = txt.textContent;
+      inp.style.cssText = 'flex:1;margin:0 4px';
+      var saveBtn = document.createElement('button');
+      saveBtn.className = 'edit-save';
+      saveBtn.textContent = 'Save';
+      saveBtn.onclick = function(){
+        var newText = inp.value.trim();
+        if(!newText) return;
+        // Find task by text match (since we don't have id here)
+        var t = S.tasks.find(function(x){return x.text===txt.textContent&&!x.done;});
+        if(t){t.text=newText;save();}
+        renderTasks();
+      };
+      tsk.insertBefore(inp, delBtn);
+      tsk.insertBefore(saveBtn, delBtn);
+      txt.style.display='none';
+      editBtn.style.display='none';
+    };
+    tsk.insertBefore(editBtn, delBtn);
+  });
+};
+
+// ===== CONDITION-BASED MESSAGING =====
+function getConditionGreeting(){
+  var conds = S.conditions||[];
+  if(conds.indexOf('Burnout')>-1) return 'Rest is productive too 💙';
+  if(conds.indexOf('Anxiety')>-1) return 'One thing at a time. You got this 🌱';
+  if(conds.indexOf('Depression')>-1) return 'Showing up today is enough 💛';
+  if(conds.indexOf('ADHD')>-1) return 'Your brain works differently. Thats a superpower ⚡';
+  if(conds.indexOf('Autism')>-1) return 'Your system, your way 🧩';
+  return 'Small steps. Big progress 🔥';
+}
+function getConditionTaskLabel(){
+  var conds = S.conditions||[];
+  if(conds.indexOf('Burnout')>-1) return '💙 One gentle thing';
+  if(conds.indexOf('Anxiety')>-1) return '🌱 Just this one thing';
+  if(conds.indexOf('Depression')>-1) return '💛 Start here';
+  return '⚡ Focus on this';
+}
+
+// Override renderHome greeting to use condition messaging
+var _origRenderHome = renderHome;
+window.renderHome = function(){
+  _origRenderHome();
+  // Add condition greeting under date
+  var dateEl = document.getElementById('greet-date');
+  if(dateEl && S.conditions && S.conditions.length){
+    var msg = document.createElement('div');
+    msg.style.cssText = 'font-size:13px;color:var(--accent);font-weight:600;margin-top:3px';
+    msg.textContent = getConditionGreeting();
+    dateEl.parentNode.insertBefore(msg, dateEl.nextSibling);
+  }
+  // Show notification banner if not enabled
+  if(!S.notificationsOn && Notification.permission !== 'granted'){
+    var scroll = document.getElementById('home-scroll');
+    if(scroll){
+      var banner = document.createElement('div');
+      banner.className = 'notif-banner';
+      banner.innerHTML = '<span>🔔 Get daily reminders to check in</span><button class="notif-btn" onclick="requestNotifications()">Enable</button>';
+      scroll.insertBefore(banner, scroll.firstChild);
+    }
+  }
+};
+
+// ===== ENHANCED PROGRESS with HEATMAP + TASK HISTORY =====
+var _origRenderProgress = renderProgress;
+window.renderProgress = function(){
+  _origRenderProgress();
+  var scroll = document.getElementById('progress-scroll');
+  if(!scroll) return;
+
+  // Build heatmap for last 35 days
+  var heatmapHtml = '<div class="card" style="margin-top:10px"><div class="card-t">📊 Activity Heatmap (35 days)</div>';
+  var days=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  heatmapHtml += '<div style="display:flex;gap:2px;margin-bottom:4px">';
+  days.forEach(function(d){heatmapHtml+='<div class="hm-day-label" style="flex:1">'+d+'</div>';});
+  heatmapHtml += '</div><div class="heatmap-wrap">';
+  var today = new Date();
+  var startDay = new Date(today);
+  startDay.setDate(today.getDate()-34);
+  // Fill empty cells to align to Sunday
+  for(var pad=0;pad<startDay.getDay();pad++){
+    heatmapHtml+='<div class="hm-cell hm0"></div>';
+  }
+  for(var d2=0;d2<35;d2++){
+    var day = new Date(startDay);
+    day.setDate(startDay.getDate()+d2);
+    var dayStr = day.toDateString();
+    var hist = (S.history||[]).find(function(h){return h.date===dayStr;});
+    var tasks = hist?hist.tasks:0;
+    if(dayStr===today.toDateString()){
+      tasks = S.tasks.filter(function(t){return t.done&&t.dd===dayStr;}).length;
+    }
+    var level = tasks===0?0:tasks<=1?1:tasks<=3?2:tasks<=5?3:4;
+    var isToday = dayStr===today.toDateString();
+    heatmapHtml+='<div class="hm-cell hm'+level+'" style="'+(isToday?'outline:2px solid var(--accent);outline-offset:1px':'')+'" title="'+dayStr+': '+tasks+' tasks"></div>';
+  }
+  heatmapHtml+='</div>';
+  heatmapHtml+='<div class="hm-legend"><span>Less</span>';
+  [0,1,2,3,4].forEach(function(l){heatmapHtml+='<div class="hm-legend-cell hm'+l+'"></div>';});
+  heatmapHtml+='<span>More</span></div></div>';
+
+  // Task history by day
+  var historyHtml = '<div class="card"><div class="card-t">📋 Task History</div>';
+  var allHistory = (S.taskHistory||{});
+  var histDays = Object.keys(allHistory).sort(function(a,b){return new Date(b)-new Date(a);}).slice(0,7);
+
+  // Also show today's done tasks
+  var todayDone = S.tasks.filter(function(t){return t.done;});
+  if(todayDone.length){
+    historyHtml+='<div class="hist-day-label">Today</div>';
+    todayDone.forEach(function(t){
+      historyHtml+='<div class="hist-task"><span style="font-size:14px">✅</span><span class="hist-task-txt">'+esc(t.text)+'</span></div>';
+    });
+  }
+
+  if(histDays.length){
+    histDays.forEach(function(dateStr){
+      var d3 = new Date(dateStr);
+      var label = d3.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+      var tasks2 = allHistory[dateStr]||[];
+      if(!tasks2.length) return;
+      historyHtml+='<div class="hist-day-label">'+label+'</div>';
+      tasks2.forEach(function(t){
+        historyHtml+='<div class="hist-task"><span style="font-size:14px">✅</span><span class="hist-task-txt">'+esc(t.text)+'</span></div>';
+      });
+    });
+  } else if(!todayDone.length){
+    historyHtml+='<div style="font-size:13px;color:var(--text3);padding:10px 0">Complete tasks to build your history.</div>';
+  }
+  historyHtml+='</div>';
+
+  scroll.innerHTML += heatmapHtml + historyHtml;
+};
+
+})();}catch(e){}}};
 function renderRoutine(){
   var html='<div class="card-t" style="margin-bottom:6px">💊 Medications</div>';
   html+='<div class="add-med"><input id="med-inp" type="text" placeholder="Add medication..."><button onclick="window._addMed()">+</button></div>';
@@ -557,6 +910,314 @@ setInterval(function(){var fill=document.querySelector('.day-fill');var timeEl=d
 var style=document.createElement('style');
 style.textContent='@keyframes unlockPulse{0%{transform:scale(1)}50%{transform:scale(1.08);box-shadow:0 0 0 12px rgba(249,115,22,.15)}100%{transform:scale(1)}}@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}';
 document.head.appendChild(style);
+
+
+// ===== DARK MODE =====
+window._toggleDark = function(){
+  var isDark = document.body.classList.toggle('dark');
+  S.darkMode = isDark;
+  save();
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+};
+if(S.darkMode) { document.body.classList.add('dark'); var db=document.getElementById('dark-btn'); if(db)db.textContent='☀️ Light'; }
+
+// ===== PUSH NOTIFICATIONS =====
+function requestNotifications(){
+  if(!('Notification' in window)) return;
+  Notification.requestPermission().then(function(p){
+    if(p==='granted'){
+      S.notificationsOn=true; save();
+      scheduleNotifications();
+      renderHome();
+    }
+  });
+}
+function scheduleNotifications(){
+  if(!('serviceWorker' in navigator)) return;
+  // Morning reminder at 9am
+  var now=new Date();
+  var morning=new Date(now.getFullYear(),now.getMonth(),now.getDate(),9,0,0);
+  if(morning<now) morning.setDate(morning.getDate()+1);
+  var msUntilMorning=morning-now;
+  setTimeout(function(){
+    if(S.notificationsOn && Notification.permission==='granted'){
+      new Notification('FOCAL 🧠',{body:"Hey "+( S.name||'there')+"! How's your battery today? Let's do one thing.",icon:'/focal/icon.png'});
+    }
+    setInterval(function(){
+      if(S.notificationsOn && Notification.permission==='granted'){
+        new Notification('FOCAL 🧠',{body:'Good morning! Time to check in.',icon:'/focal/icon.png'});
+      }
+    },86400000);
+  },msUntilMorning);
+  // Evening reminder at 8pm
+  var evening=new Date(now.getFullYear(),now.getMonth(),now.getDate(),20,0,0);
+  if(evening<now) evening.setDate(evening.getDate()+1);
+  var msUntilEvening=evening-now;
+  setTimeout(function(){
+    if(S.notificationsOn && Notification.permission==='granted'){
+      new Notification('FOCAL 🌙',{body:'Wind down time. Did you do your evening routine?',icon:'/focal/icon.png'});
+    }
+    setInterval(function(){
+      if(S.notificationsOn && Notification.permission==='granted'){
+        new Notification('FOCAL 🌙',{body:'Evening check-in time. How did today go?',icon:'/focal/icon.png'});
+      }
+    },86400000);
+  },msUntilEvening);
+}
+if(S.notificationsOn && Notification.permission==='granted') scheduleNotifications();
+
+// ===== TASK COMPLETION SOUND =====
+function playDoneSound(){
+  try{
+    var ctx=new(window.AudioContext||window.webkitAudioContext)();
+    var freqs=[523,659,784];
+    freqs.forEach(function(f,i){
+      var o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);
+      o.frequency.value=f;o.type='sine';
+      g.gain.setValueAtTime(0,ctx.currentTime+i*0.1);
+      g.gain.linearRampToValueAtTime(0.15,ctx.currentTime+i*0.1+0.02);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.1+0.3);
+      o.start(ctx.currentTime+i*0.1);
+      o.stop(ctx.currentTime+i*0.1+0.3);
+    });
+  }catch(e){}
+}
+
+// ===== LEVEL UP CELEBRATION =====
+var _prevLevel=Math.floor((S.xp||0)/500)+1;
+function checkLevelUp(oldXp, newXp){
+  var oldLvl=Math.floor(oldXp/500)+1;
+  var newLvl=Math.floor(newXp/500)+1;
+  if(newLvl>oldLvl){
+    var levelNames=['','Focus Starter','Getting There','Brain Boss','Flow Master','Deep Thinker','Task Crusher','Mind Master','Focus Pro','Elite Brain','FOCAL Legend'];
+    var o=document.createElement('div');
+    o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px';
+    o.innerHTML='<div style="font-size:60px;animation:celBounce .6s ease-in-out infinite">⬆️</div>'
+      +'<div style="font-size:14px;font-weight:600;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:2px">LEVEL UP</div>'
+      +'<div style="font-size:28px;font-weight:800;color:#fff">Level '+newLvl+'</div>'
+      +'<div style="font-size:18px;color:var(--accent)">'+( levelNames[newLvl]||'FOCAL Legend')+'</div>'
+      +'<div style="font-size:13px;color:rgba(255,255,255,.5);text-align:center;margin-top:4px">You are getting better every day 🔥</div>'
+      +'<button onclick="this.parentElement.remove()" style="margin-top:16px;background:var(--accent);border:none;border-radius:10px;padding:12px 28px;font-size:16px;font-weight:700;color:#fff;cursor:pointer">Keep going 💪</button>';
+    document.body.appendChild(o);
+    spawnConfetti();spawnConfetti();
+    try{
+      var ctx=new(window.AudioContext||window.webkitAudioContext)();
+      [523,659,784,1047].forEach(function(f,i){
+        var o2=ctx.createOscillator(),g=ctx.createGain();
+        o2.connect(g);g.connect(ctx.destination);
+        o2.frequency.value=f;o2.type='sine';
+        g.gain.setValueAtTime(0,ctx.currentTime+i*0.15);
+        g.gain.linearRampToValueAtTime(0.2,ctx.currentTime+i*0.15+0.02);
+        g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.15+0.4);
+        o2.start(ctx.currentTime+i*0.15);
+        o2.stop(ctx.currentTime+i*0.15+0.4);
+      });
+    }catch(e){}
+  }
+}
+
+// Override addXP to check level up and play sound
+var _origAddXP = addXP;
+window.addXP = function(n){
+  var oldXp = S.xp||0;
+  _origAddXP(n);
+  playDoneSound();
+  checkLevelUp(oldXp, S.xp||0);
+};
+
+// ===== DAILY TASK RESET =====
+function checkDailyReset(){
+  var today = new Date().toDateString();
+  if(S.lastTaskReset !== today){
+    // Save completed tasks to history before reset
+    if(!S.taskHistory) S.taskHistory={};
+    var doneTasks = S.tasks.filter(function(t){return t.done;});
+    if(doneTasks.length && S.lastTaskReset){
+      S.taskHistory[S.lastTaskReset] = doneTasks.map(function(t){return {text:t.text,dd:t.dd};});
+    }
+    // Remove completed tasks, keep pending ones
+    S.tasks = S.tasks.filter(function(t){return !t.done;});
+    S.lastTaskReset = today;
+    save();
+  }
+}
+checkDailyReset();
+
+// ===== TASK EDITING =====
+var _editingTaskId = null;
+window._editTask = function(id){
+  _editingTaskId = id;
+  renderTasks();
+  setTimeout(function(){
+    var inp = document.getElementById('edit-inp-'+id);
+    if(inp){inp.focus();inp.select();}
+  },50);
+};
+window._saveEdit = function(id){
+  var inp = document.getElementById('edit-inp-'+id);
+  if(!inp) return;
+  var v = inp.value.trim();
+  if(!v) return;
+  var t = S.tasks.find(function(x){return x.id===id;});
+  if(t){t.text=v;save();}
+  _editingTaskId = null;
+  renderTasks();
+};
+
+// task editing handled via _editTask  
+// Patch: after renderTasks, intercept to add edit buttons
+var _baseRenderTasks = renderTasks;
+window.renderTasks = function(){
+  _baseRenderTasks();
+  // Add edit buttons to each task item
+  document.querySelectorAll('.tsk:not(.dn) .tsk-del').forEach(function(delBtn){
+    var tsk = delBtn.closest('.tsk');
+    if(!tsk || tsk.querySelector('.tsk-edit')) return;
+    var editBtn = document.createElement('button');
+    editBtn.className = 'tsk-edit';
+    editBtn.innerHTML = '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" fill="none"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+    editBtn.onclick = function(){
+      var txt = tsk.querySelector('.tsk-txt');
+      if(!txt) return;
+      var inp = document.createElement('input');
+      inp.className = 'edit-inp';
+      inp.value = txt.textContent;
+      inp.style.cssText = 'flex:1;margin:0 4px';
+      var saveBtn = document.createElement('button');
+      saveBtn.className = 'edit-save';
+      saveBtn.textContent = 'Save';
+      saveBtn.onclick = function(){
+        var newText = inp.value.trim();
+        if(!newText) return;
+        // Find task by text match (since we don't have id here)
+        var t = S.tasks.find(function(x){return x.text===txt.textContent&&!x.done;});
+        if(t){t.text=newText;save();}
+        renderTasks();
+      };
+      tsk.insertBefore(inp, delBtn);
+      tsk.insertBefore(saveBtn, delBtn);
+      txt.style.display='none';
+      editBtn.style.display='none';
+    };
+    tsk.insertBefore(editBtn, delBtn);
+  });
+};
+
+// ===== CONDITION-BASED MESSAGING =====
+function getConditionGreeting(){
+  var conds = S.conditions||[];
+  if(conds.indexOf('Burnout')>-1) return 'Rest is productive too 💙';
+  if(conds.indexOf('Anxiety')>-1) return 'One thing at a time. You got this 🌱';
+  if(conds.indexOf('Depression')>-1) return 'Showing up today is enough 💛';
+  if(conds.indexOf('ADHD')>-1) return 'Your brain works differently. Thats a superpower ⚡';
+  if(conds.indexOf('Autism')>-1) return 'Your system, your way 🧩';
+  return 'Small steps. Big progress 🔥';
+}
+function getConditionTaskLabel(){
+  var conds = S.conditions||[];
+  if(conds.indexOf('Burnout')>-1) return '💙 One gentle thing';
+  if(conds.indexOf('Anxiety')>-1) return '🌱 Just this one thing';
+  if(conds.indexOf('Depression')>-1) return '💛 Start here';
+  return '⚡ Focus on this';
+}
+
+// Override renderHome greeting to use condition messaging
+var _origRenderHome = renderHome;
+window.renderHome = function(){
+  _origRenderHome();
+  // Add condition greeting under date
+  var dateEl = document.getElementById('greet-date');
+  if(dateEl && S.conditions && S.conditions.length){
+    var msg = document.createElement('div');
+    msg.style.cssText = 'font-size:13px;color:var(--accent);font-weight:600;margin-top:3px';
+    msg.textContent = getConditionGreeting();
+    dateEl.parentNode.insertBefore(msg, dateEl.nextSibling);
+  }
+  // Show notification banner if not enabled
+  if(!S.notificationsOn && Notification.permission !== 'granted'){
+    var scroll = document.getElementById('home-scroll');
+    if(scroll){
+      var banner = document.createElement('div');
+      banner.className = 'notif-banner';
+      banner.innerHTML = '<span>🔔 Get daily reminders to check in</span><button class="notif-btn" onclick="requestNotifications()">Enable</button>';
+      scroll.insertBefore(banner, scroll.firstChild);
+    }
+  }
+};
+
+// ===== ENHANCED PROGRESS with HEATMAP + TASK HISTORY =====
+var _origRenderProgress = renderProgress;
+window.renderProgress = function(){
+  _origRenderProgress();
+  var scroll = document.getElementById('progress-scroll');
+  if(!scroll) return;
+
+  // Build heatmap for last 35 days
+  var heatmapHtml = '<div class="card" style="margin-top:10px"><div class="card-t">📊 Activity Heatmap (35 days)</div>';
+  var days=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  heatmapHtml += '<div style="display:flex;gap:2px;margin-bottom:4px">';
+  days.forEach(function(d){heatmapHtml+='<div class="hm-day-label" style="flex:1">'+d+'</div>';});
+  heatmapHtml += '</div><div class="heatmap-wrap">';
+  var today = new Date();
+  var startDay = new Date(today);
+  startDay.setDate(today.getDate()-34);
+  // Fill empty cells to align to Sunday
+  for(var pad=0;pad<startDay.getDay();pad++){
+    heatmapHtml+='<div class="hm-cell hm0"></div>';
+  }
+  for(var d2=0;d2<35;d2++){
+    var day = new Date(startDay);
+    day.setDate(startDay.getDate()+d2);
+    var dayStr = day.toDateString();
+    var hist = (S.history||[]).find(function(h){return h.date===dayStr;});
+    var tasks = hist?hist.tasks:0;
+    if(dayStr===today.toDateString()){
+      tasks = S.tasks.filter(function(t){return t.done&&t.dd===dayStr;}).length;
+    }
+    var level = tasks===0?0:tasks<=1?1:tasks<=3?2:tasks<=5?3:4;
+    var isToday = dayStr===today.toDateString();
+    heatmapHtml+='<div class="hm-cell hm'+level+'" style="'+(isToday?'outline:2px solid var(--accent);outline-offset:1px':'')+'" title="'+dayStr+': '+tasks+' tasks"></div>';
+  }
+  heatmapHtml+='</div>';
+  heatmapHtml+='<div class="hm-legend"><span>Less</span>';
+  [0,1,2,3,4].forEach(function(l){heatmapHtml+='<div class="hm-legend-cell hm'+l+'"></div>';});
+  heatmapHtml+='<span>More</span></div></div>';
+
+  // Task history by day
+  var historyHtml = '<div class="card"><div class="card-t">📋 Task History</div>';
+  var allHistory = (S.taskHistory||{});
+  var histDays = Object.keys(allHistory).sort(function(a,b){return new Date(b)-new Date(a);}).slice(0,7);
+
+  // Also show today's done tasks
+  var todayDone = S.tasks.filter(function(t){return t.done;});
+  if(todayDone.length){
+    historyHtml+='<div class="hist-day-label">Today</div>';
+    todayDone.forEach(function(t){
+      historyHtml+='<div class="hist-task"><span style="font-size:14px">✅</span><span class="hist-task-txt">'+esc(t.text)+'</span></div>';
+    });
+  }
+
+  if(histDays.length){
+    histDays.forEach(function(dateStr){
+      var d3 = new Date(dateStr);
+      var label = d3.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+      var tasks2 = allHistory[dateStr]||[];
+      if(!tasks2.length) return;
+      historyHtml+='<div class="hist-day-label">'+label+'</div>';
+      tasks2.forEach(function(t){
+        historyHtml+='<div class="hist-task"><span style="font-size:14px">✅</span><span class="hist-task-txt">'+esc(t.text)+'</span></div>';
+      });
+    });
+  } else if(!todayDone.length){
+    historyHtml+='<div style="font-size:13px;color:var(--text3);padding:10px 0">Complete tasks to build your history.</div>';
+  }
+  historyHtml+='</div>';
+
+  scroll.innerHTML += heatmapHtml + historyHtml;
+};
+
 })();
 </script>
 </body>
