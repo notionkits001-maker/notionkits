@@ -892,7 +892,82 @@ function renderProgress(){
   html+='<div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:6px">Screenshot and share with friends 🏆</div>';
   html+='</div>';
   
+  // Share button
+  html += '<button onclick="var txt=\'I am Level '+lvl+' on FOCAL — '+(S.streak||0)+' day streak 🔥 Try it: focal-app-4.vercel.app\';if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){alert(\'Copied! Paste anywhere 🎉\');});}else{prompt(\'Copy this:\',txt);}" style="width:100%;background:var(--bg2);border:1.5px solid var(--accent);border-radius:10px;padding:12px;font-size:13px;font-weight:700;color:var(--accent);margin-top:8px;cursor:pointer;transition:all .15s">📣 Share my progress</button>';
+
+  // Clickable Daily History
+  var allHistory2 = S.taskHistory||{};
+  var histDays2 = Object.keys(allHistory2).sort(function(a,b){return new Date(b)-new Date(a);});
+  var todayDone2 = S.tasks.filter(function(t){return t.done;});
+  html += '<div style="background:var(--bg2);border-radius:14px;padding:14px;margin-top:10px;border:1px solid var(--border)">';
+  html += '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">📋 Daily History</div>';
+  
+  function makeHistRow(uid3,label3,sub3,taskNames3){
+    var r='<div style="border-bottom:1px solid var(--border)">';
+    r+='<div class="focal-hist-row" data-uid3="'+uid3+'" style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;cursor:pointer">';
+    r+='<div><div style="font-size:13px;font-weight:600;color:var(--text)">'+label3+'</div>';
+    r+='<div style="font-size:11px;color:var(--text3);margin-top:2px">'+sub3+'</div></div>';
+    r+='<span style="color:var(--text3);font-size:12px">▶</span></div>';
+    r+='<div id="'+uid3+'" style="display:none;padding-bottom:8px">';
+    if(taskNames3&&taskNames3.length){
+      taskNames3.forEach(function(t2){r+='<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--bg);border-radius:6px;margin-bottom:4px"><span>✅</span><span style="font-size:13px;color:var(--text2)">'+esc(t2)+'</span></div>';});
+    }else{r+='<div style="font-size:12px;color:var(--text3);padding:4px 8px">Tasks completed.</div>';}
+    r+='</div></div>';
+    return r;
+  }
+
+  if(todayDone2.length){
+    html+=makeHistRow('fhd_today','Today &#x1F525;',todayDone2.length+' tasks completed',todayDone2.map(function(t){return t.text;}));
+  }
+
+  if(histDays2.length){
+    var shown2=0;
+    histDays2.forEach(function(ds,di){
+      var dy=allHistory2[ds];if(!dy)return;
+      var dl=new Date(ds).toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+      var uid4='fhd_'+di;
+      var tc=dy.tasks||0;
+      var tl=dy.taskList||[];
+      if(shown2>=14)html+='<div class="focal-hist-extra" style="display:none">';
+      html+=makeHistRow(uid4,dl,'&#x2705; '+tc+' tasks'+(dy.sessions?' &middot; &#x23F1; '+dy.sessions+' sessions':''),tl);
+      if(shown2>=14)html+='</div>';
+      shown2++;
+    });
+    if(shown2>14)html+='<button class="focal-show-more" style="width:100%;background:none;border:none;padding:10px;font-size:13px;color:var(--accent);font-weight:600;cursor:pointer">Show all '+shown2+' days &#x25BC;</button>';
+  }
+
+  if(!todayDone2.length&&!histDays2.length){
+    html+='<div style="font-size:13px;color:var(--text3);padding:12px 0;text-align:center">&#x1F447; This is what your history will look like.<br><br>';
+    html+='<div style="opacity:.35;pointer-events:none">';
+    html+=makeHistRow('fhd_ex1','Monday, Jan 1','&#x2705; 5 tasks',['Finish the report','Call the dentist','Go for a walk']);
+    html+=makeHistRow('fhd_ex2','Sunday, Dec 31','&#x2705; 3 tasks',['Grocery run']);
+    html+='</div>';
+    html+='<div style="margin-top:8px;font-size:12px;color:var(--text3)">Complete your first task today!</div></div>';
+  }
+
+  html+='</div>';
   $('progress-scroll').innerHTML=html;
+
+  // Event delegation for history rows
+  setTimeout(function(){
+    var sc=$('progress-scroll');
+    if(!sc||sc._histEvt)return;
+    sc._histEvt=true;
+    sc.addEventListener('click',function(e){
+      var row=e.target.closest('.focal-hist-row');
+      if(row){
+        var uid5=row.getAttribute('data-uid3');
+        var el5=document.getElementById(uid5);
+        var arr5=row.querySelector('span');
+        if(el5){var op5=el5.style.display==='block';el5.style.display=op5?'none':'block';if(arr5)arr5.textContent=op5?'▶':'▼';}
+        return;
+      }
+      if(e.target.classList.contains('focal-show-more')){
+        sc.querySelectorAll('.focal-hist-extra').forEach(function(x){x.style.display='block';});
+        e.target.style.display='none';
+      }
+    });
+  },100);
 }
 function addXP(n){S.xp=(S.xp||0)+n;save();}
 function cel(emoji,text){spawnConfetti();$('cel-e').textContent=emoji;$('cel-t').textContent=text;$('cel').classList.add('show');setTimeout(hideCel,2000);}
