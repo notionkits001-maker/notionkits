@@ -272,7 +272,7 @@ body.dark .qc-bar input{background:var(--bg2);color:var(--text)}
 <input class="lk-inp" id="ki" type="text" placeholder="FOCAL-XXXX-XXXX-XXXX" maxlength="20" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
 <div class="lk-err" id="ke">Invalid key.</div>
 </div>
-<button class="btn-go" id="btn-unlock" onclick="checkKey()">Unlock FOCAL</button>
+<button class="btn-go" id="btn-unlock" onclick="window._ck()">Unlock FOCAL</button>
 <button class="btn-bio" id="btn-bio">🔐 Use Face ID / Fingerprint</button>
 <div style="margin-top:20px;text-align:center"><a href="https://premiumnotionkits.etsy.com" target="_blank" style="color:var(--accent);font-size:14px;font-weight:600;text-decoration:none">Don't have a key? Get FOCAL on Etsy →</a></div>
 <div class="lk-foot">🔒 Your data never leaves your device</div>
@@ -383,6 +383,7 @@ $('ki').addEventListener('input',function(e){
 });
 $('ki').addEventListener('keydown',function(e){if(e.key==='Enter')checkKey();});
 $('btn-bio').addEventListener('click',tryBio);
+window._ck=function(){checkKey();};
 function checkKey(){
   var inp=$('ki').value.trim().toUpperCase();
   if(!inp){$('ki').classList.add('err');$('ke').textContent='Please enter your license key.';$('ke').classList.add('show');return;}
