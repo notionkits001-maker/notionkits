@@ -508,6 +508,12 @@ function renderTasks(){
   var mode=S.taskMode||'all';
   var html='<div class="tm-row"><button class="tm-btn '+(mode==='all'?'on':'')+'" onclick="window._tm(\'all\')">All</button><button class="tm-btn '+(mode==='today'?'on':'')+'" onclick="window._tm(\'today\')">Today</button><button class="tm-btn '+(mode==='one'?'on':'')+'" onclick="window._tm(\'one\')">Just One</button></div>';
   html+='<div class="at-bar"><input class="at-inp" id="t-inp" type="text" placeholder="Add a task..." maxlength="200"><button class="at-add" onclick="window._addT()">+</button></div>';
+  html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">';
+  html+='<span style="font-size:12px;color:var(--text3);font-weight:600">&#x23F0; Remind me at:</span>';
+  html+='<input type="time" id="t-time" style="background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--rx);padding:7px 10px;font-size:13px;color:var(--text);flex:1">';
+  html+='<button onclick="document.getElementById(\'t-time\').value=\'\'" style="background:none;border:none;font-size:12px;color:var(--text3);padding:4px 8px;cursor:pointer">Clear</button>';
+  html+='</div>';
+
   html+='<div class="card"><div class="card-t">Brain Dump</div><textarea class="bd-area" id="bd" placeholder="One thing per line. FOCAL sorts them." rows="3"></textarea><button class="bd-btn" onclick="window._bdump()">Sort into Tasks →</button></div>';
   var tasks=S.tasks.slice();
   if(mode==='today')tasks=tasks.filter(function(t){return t.tag==='today';});
@@ -519,9 +525,33 @@ function renderTasks(){
   $('tasks-scroll').innerHTML=html;
   var ti=$('t-inp');if(ti)ti.addEventListener('keydown',function(e){if(e.key==='Enter')window._addT();});
 }
-function tskHTML(t){return '<div class="tsk '+(t.done?'dn':'')+'"><div class="tsk-ck '+(t.done?'checked':'')+'" onclick="window._togT(\''+t.id+'\')"><svg viewBox="0 0 12 12" stroke-linecap="round"><polyline points="2,6 5,9 10,3"/></svg></div><span class="tsk-txt">'+esc(t.text)+'</span><span class="tsk-tag">'+(t.tag||'today')+'</span><button class="tsk-del" onclick="window._delT(\''+t.id+'\')"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';}
+function tskHTML(t){
+  var timeTag=t.reminderTime&&!t.done?'<span style="font-size:10px;background:#FFF4ED;color:var(--accent);border-radius:20px;padding:2px 7px;font-weight:600;margin-right:4px">&#x23F0; '+t.reminderTime+'</span>':'';
+  var id=t.id;
+  var html='<div class="tsk '+(t.done?'dn':'')+'">'+timeTag;
+  html+='<div class="tsk-ck '+(t.done?'checked':'')+'" onclick="window._togT(\''+id+'\')"><svg viewBox="0 0 12 12" stroke-linecap="round"><polyline points="2,6 5,9 10,3"/></svg></div>';
+  html+='<span class="tsk-txt">'+esc(t.text)+'</span>';
+  html+='<span class="tsk-tag">'+(t.tag||'today')+'</span>';
+  if(!t.done)html+='<button class="tsk-edit" onclick="window._editTask(\''+id+'\')"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" fill="none"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>';
+  html+='<button class="tsk-del" onclick="window._delT(\''+id+'\')"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+  html+='</div>';
+  return html;
+}
 window._tm=function(m){S.taskMode=m;renderTasks();};
-window._addT=function(){var inp=$('t-inp');var v=inp.value.trim();if(!v)return;S.tasks.push({id:Date.now()+'',text:v,done:false,tag:'today',dd:null});inp.value='';save();renderTasks();renderHome();};
+window._addT=function(){
+  var inp=$('t-inp');
+  var v=inp.value.trim();
+  if(!v)return;
+  var timeInp=$('t-time');
+  var reminderTime=timeInp?timeInp.value:'';
+  var taskId=Date.now()+'';
+  S.tasks.push({id:taskId,text:v,done:false,tag:'today',dd:null,reminderTime:reminderTime});
+  inp.value='';
+  if(timeInp)timeInp.value='';
+  save();
+  if(reminderTime){scheduleTaskReminder(taskId,v,reminderTime);}
+  renderTasks();renderHome();
+};
 window._bdump=function(){var d=$('bd').value.trim();if(!d)return;var lines=d.split('\n').filter(function(l){return l.trim();});lines.forEach(function(l,i){S.tasks.push({id:Date.now()+'_'+i,text:l.trim(),done:false,tag:i===0?'today':'later',dd:null});});$('bd').value='';save();renderTasks();renderHome();cel('🧠','Brain dumped!');addXP(15);};
 window._togT=function(id){var t=S.tasks.find(function(x){return x.id===id;});if(!t)return;t.done=!t.done;t.dd=t.done?new Date().toDateString():null;save();if(t.done){var rem=S.tasks.filter(function(x){return !x.done;}).length;if(rem===0&&S.tasks.length>0){setTimeout(bigCelebration,300);}else{cel('✅','Task complete!');addXP(25);}}renderTasks();renderHome();};
 window._delT=function(id){S.tasks=S.tasks.filter(function(x){return x.id!==id;});save();renderTasks();renderHome();};
@@ -816,6 +846,55 @@ window._togLevel=function(uid){
     if(arr)arr.textContent='▼';
   }
 };
+
+
+// ===== TASK REMINDERS =====
+var _taskTimers={};
+function scheduleTaskReminder(id,text,timeStr){
+  if(!timeStr)return;
+  if(_taskTimers[id])clearTimeout(_taskTimers[id]);
+  var now=new Date();
+  var parts=timeStr.split(':');
+  var target=new Date(now.getFullYear(),now.getMonth(),now.getDate(),parseInt(parts[0]),parseInt(parts[1]),0);
+  if(target<=now)return; // time already passed today
+  var ms=target-now;
+  _taskTimers[id]=setTimeout(function(){
+    if(Notification.permission==='granted'){
+      var n=new Notification('FOCAL ⏰',{
+        body:'Time for: '+text,
+        icon:'/focal/icon.png',
+        badge:'/focal/icon.png',
+        tag:'task_'+id
+      });
+      n.onclick=function(){window.focus();};
+    }else{
+      // Fallback - show in-app alert
+      var banner=document.createElement('div');
+      banner.style.cssText='position:fixed;top:0;left:0;right:0;background:var(--accent);color:#fff;padding:14px 16px;font-size:14px;font-weight:700;z-index:999;text-align:center;cursor:pointer;animation:sheetUp .3s ease';
+      banner.textContent='⏰ Time for: '+text;
+      banner.onclick=function(){banner.remove();};
+      document.body.appendChild(banner);
+      setTimeout(function(){if(banner.parentNode)banner.remove();},8000);
+    }
+    delete _taskTimers[id];
+    save();
+  },ms);
+}
+
+// Reschedule all pending reminders on app load
+function rescheduleAllReminders(){
+  (S.tasks||[]).forEach(function(t){
+    if(t.reminderTime&&!t.done){
+      scheduleTaskReminder(t.id,t.text,t.reminderTime);
+    }
+  });
+}
+rescheduleAllReminders();
+
+// Request notification permission if not yet granted
+if(Notification&&Notification.permission==='default'){
+  // Will be requested when they enable notifications via banner
+}
 
 })();}catch(e){}}};
 function renderRoutine(){
@@ -1456,7 +1535,105 @@ window._togLevel=function(uid){
       }
     });
   };
+
+// ===== TASK REMINDERS =====
+var _taskTimers={};
+function scheduleTaskReminder(id,text,timeStr){
+  if(!timeStr)return;
+  if(_taskTimers[id])clearTimeout(_taskTimers[id]);
+  var now=new Date();
+  var parts=timeStr.split(':');
+  var target=new Date(now.getFullYear(),now.getMonth(),now.getDate(),parseInt(parts[0]),parseInt(parts[1]),0);
+  if(target<=now)return; // time already passed today
+  var ms=target-now;
+  _taskTimers[id]=setTimeout(function(){
+    if(Notification.permission==='granted'){
+      var n=new Notification('FOCAL ⏰',{
+        body:'Time for: '+text,
+        icon:'/focal/icon.png',
+        badge:'/focal/icon.png',
+        tag:'task_'+id
+      });
+      n.onclick=function(){window.focus();};
+    }else{
+      // Fallback - show in-app alert
+      var banner=document.createElement('div');
+      banner.style.cssText='position:fixed;top:0;left:0;right:0;background:var(--accent);color:#fff;padding:14px 16px;font-size:14px;font-weight:700;z-index:999;text-align:center;cursor:pointer;animation:sheetUp .3s ease';
+      banner.textContent='⏰ Time for: '+text;
+      banner.onclick=function(){banner.remove();};
+      document.body.appendChild(banner);
+      setTimeout(function(){if(banner.parentNode)banner.remove();},8000);
+    }
+    delete _taskTimers[id];
+    save();
+  },ms);
+}
+
+// Reschedule all pending reminders on app load
+function rescheduleAllReminders(){
+  (S.tasks||[]).forEach(function(t){
+    if(t.reminderTime&&!t.done){
+      scheduleTaskReminder(t.id,t.text,t.reminderTime);
+    }
+  });
+}
+rescheduleAllReminders();
+
+// Request notification permission if not yet granted
+if(Notification&&Notification.permission==='default'){
+  // Will be requested when they enable notifications via banner
+}
+
 })();
+
+
+// ===== TASK REMINDERS =====
+var _taskTimers={};
+function scheduleTaskReminder(id,text,timeStr){
+  if(!timeStr)return;
+  if(_taskTimers[id])clearTimeout(_taskTimers[id]);
+  var now=new Date();
+  var parts=timeStr.split(':');
+  var target=new Date(now.getFullYear(),now.getMonth(),now.getDate(),parseInt(parts[0]),parseInt(parts[1]),0);
+  if(target<=now)return; // time already passed today
+  var ms=target-now;
+  _taskTimers[id]=setTimeout(function(){
+    if(Notification.permission==='granted'){
+      var n=new Notification('FOCAL ⏰',{
+        body:'Time for: '+text,
+        icon:'/focal/icon.png',
+        badge:'/focal/icon.png',
+        tag:'task_'+id
+      });
+      n.onclick=function(){window.focus();};
+    }else{
+      // Fallback - show in-app alert
+      var banner=document.createElement('div');
+      banner.style.cssText='position:fixed;top:0;left:0;right:0;background:var(--accent);color:#fff;padding:14px 16px;font-size:14px;font-weight:700;z-index:999;text-align:center;cursor:pointer;animation:sheetUp .3s ease';
+      banner.textContent='⏰ Time for: '+text;
+      banner.onclick=function(){banner.remove();};
+      document.body.appendChild(banner);
+      setTimeout(function(){if(banner.parentNode)banner.remove();},8000);
+    }
+    delete _taskTimers[id];
+    save();
+  },ms);
+}
+
+// Reschedule all pending reminders on app load
+function rescheduleAllReminders(){
+  (S.tasks||[]).forEach(function(t){
+    if(t.reminderTime&&!t.done){
+      scheduleTaskReminder(t.id,t.text,t.reminderTime);
+    }
+  });
+}
+rescheduleAllReminders();
+
+// Request notification permission if not yet granted
+if(Notification&&Notification.permission==='default'){
+  // Will be requested when they enable notifications via banner
+}
 
 })();
 </script>
