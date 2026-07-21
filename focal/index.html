@@ -863,27 +863,35 @@ window.renderProgress = function(){
 
 // ===== TOGGLE HISTORY DAY =====
 window._togHist=function(uid){
-  console.log('togHist called with uid:',uid);
   var el=document.getElementById(uid);
-  console.log('element found:',el);
   var arr=document.getElementById('arr_'+uid);
   if(!el)return;
-  var open=el.style.display==='block';
-  el.style.display=open?'none':'block';
-  if(arr)arr.textContent=open?'▶':'▼';
+  if(el.getAttribute('data-open')==='1'){
+    el.setAttribute('data-open','0');
+    el.style.display='none';
+    if(arr)arr.textContent='▶';
+  }else{
+    el.setAttribute('data-open','1');
+    el.style.display='block';
+    if(arr)arr.textContent='▼';
+  }
 };
 
 // ===== TOGGLE LEVEL DETAIL =====
 window._togLevel=function(uid){
-  console.log('togLevel called with uid:',uid);
   var el=document.getElementById(uid);
-  console.log('element found:',el);
   var num=uid.replace('lv','');
   var arr=document.getElementById('larr'+num);
   if(!el)return;
-  var open=el.style.display==='block';
-  el.style.display=open?'none':'block';
-  if(arr)arr.textContent=open?'▶':'▼';
+  if(el.getAttribute('data-open')==='1'){
+    el.setAttribute('data-open','0');
+    el.style.display='none';
+    if(arr)arr.textContent='▶';
+  }else{
+    el.setAttribute('data-open','1');
+    el.style.display='block';
+    if(arr)arr.textContent='▼';
+  }
 };
 
 })();}catch(e){}}};
@@ -1291,27 +1299,35 @@ window.renderProgress = function(){
 
 // ===== TOGGLE HISTORY DAY =====
 window._togHist=function(uid){
-  console.log('togHist called with uid:',uid);
   var el=document.getElementById(uid);
-  console.log('element found:',el);
   var arr=document.getElementById('arr_'+uid);
   if(!el)return;
-  var open=el.style.display==='block';
-  el.style.display=open?'none':'block';
-  if(arr)arr.textContent=open?'▶':'▼';
+  if(el.getAttribute('data-open')==='1'){
+    el.setAttribute('data-open','0');
+    el.style.display='none';
+    if(arr)arr.textContent='▶';
+  }else{
+    el.setAttribute('data-open','1');
+    el.style.display='block';
+    if(arr)arr.textContent='▼';
+  }
 };
 
 // ===== TOGGLE LEVEL DETAIL =====
 window._togLevel=function(uid){
-  console.log('togLevel called with uid:',uid);
   var el=document.getElementById(uid);
-  console.log('element found:',el);
   var num=uid.replace('lv','');
   var arr=document.getElementById('larr'+num);
   if(!el)return;
-  var open=el.style.display==='block';
-  el.style.display=open?'none':'block';
-  if(arr)arr.textContent=open?'▶':'▼';
+  if(el.getAttribute('data-open')==='1'){
+    el.setAttribute('data-open','0');
+    el.style.display='none';
+    if(arr)arr.textContent='▶';
+  }else{
+    el.setAttribute('data-open','1');
+    el.style.display='block';
+    if(arr)arr.textContent='▼';
+  }
 };
 
 })();
