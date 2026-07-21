@@ -471,7 +471,7 @@ function updateStreak(){
       var yDone=S.tasks.filter(function(t){return t.done&&t.dd===S.lastCheckin;}).length;
       var ySess=(S.sessions||[]).filter(function(s){return new Date(s).toDateString()===S.lastCheckin;}).length;
       var existing=S.history.find(function(h){return h.date===S.lastCheckin;});
-      if(!existing)S.history.push({date:S.lastCheckin,tasks:yDone,sessions:ySess,xp:S.xp||0,streak:S.streak||0});
+      var yTaskNames=S.tasks.filter(function(t){return t.done&&t.dd===S.lastCheckin;}).map(function(t){return t.text;});if(!existing)S.history.push({date:S.lastCheckin,tasks:yDone,sessions:ySess,xp:S.xp||0,streak:S.streak||0,taskList:yTaskNames});
       if(S.history.length>365)S.history=S.history.slice(-365);
     }
     var yest=new Date(Date.now()-86400000).toDateString();
@@ -810,34 +810,76 @@ window.renderProgress = function(){
   // Task history by day
   var historyHtml = '<div class="card"><div class="card-t">📋 Task History</div>';
   var allHistory = (S.taskHistory||{});
-  var histDays = Object.keys(allHistory).sort(function(a,b){return new Date(b)-new Date(a);}).slice(0,7);
+  var histDays = Object.keys(allHistory).sort(function(a,b){return new Date(b)-new Date(a);});
 
-  // Also show today's done tasks
+  // Today's done tasks
   var todayDone = S.tasks.filter(function(t){return t.done;});
   if(todayDone.length){
-    historyHtml+='<div class="hist-day-label">Today</div>';
+    var todayUid = 'hist_today';
+    historyHtml += '<div style="border-bottom:1px solid var(--border)">';
+    historyHtml += '<div data-huid="'+todayUid+'" onclick="window._togHist(this.dataset.huid)" style="display:flex;align-items:center;gap:8px;padding:10px 0;cursor:pointer">';
+    historyHtml += '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">Today</div>';
+    historyHtml += '<div style="font-size:11px;color:var(--text3);margin-top:2px">'+todayDone.length+' tasks completed</div></div>';
+    historyHtml += '<div style="font-size:12px;color:var(--text3)" id="arr_'+todayUid+'">▶</div></div>';
+    historyHtml += '<div id="'+todayUid+'" style="display:none;padding-bottom:8px">';
     todayDone.forEach(function(t){
-      historyHtml+='<div class="hist-task"><span style="font-size:14px">✅</span><span class="hist-task-txt">'+esc(t.text)+'</span></div>';
+      historyHtml += '<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--bg2);border-radius:6px;margin-bottom:4px"><span>✅</span><span style="font-size:13px;color:var(--text2)">'+esc(t.text)+'</span></div>';
     });
+    historyHtml += '</div></div>';
   }
 
   if(histDays.length){
     histDays.forEach(function(dateStr){
+      var dayTasks = allHistory[dateStr]||[];
+      if(!dayTasks.tasks && !dayTasks.taskList) return;
       var d3 = new Date(dateStr);
       var label = d3.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
-      var tasks2 = allHistory[dateStr]||[];
-      if(!tasks2.length) return;
-      historyHtml+='<div class="hist-day-label">'+label+'</div>';
-      tasks2.forEach(function(t){
-        historyHtml+='<div class="hist-task"><span style="font-size:14px">✅</span><span class="hist-task-txt">'+esc(t.text)+'</span></div>';
-      });
+      var uid = 'hist_'+dateStr.replace(/\s/g,'_');
+      var taskCount = dayTasks.tasks||0;
+      var taskList = dayTasks.taskList||[];
+      historyHtml += '<div style="border-bottom:1px solid var(--border)">';
+      historyHtml += '<div data-huid="'+uid+'" onclick="window._togHist(this.dataset.huid)" style="display:flex;align-items:center;gap:8px;padding:10px 0;cursor:pointer">';
+      historyHtml += '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">'+label+'</div>';
+      historyHtml += '<div style="font-size:11px;color:var(--text3);margin-top:2px">✅ '+taskCount+' tasks'+(dayTasks.sessions?' · ⏱ '+dayTasks.sessions+' sessions':'')+'</div></div>';
+      historyHtml += '<div style="font-size:12px;color:var(--text3)" id="arr_'+uid+'">▶</div></div>';
+      historyHtml += '<div id="'+uid+'" style="display:none;padding-bottom:8px">';
+      if(taskList.length){
+        taskList.forEach(function(t){
+          historyHtml += '<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--bg2);border-radius:6px;margin-bottom:4px"><span>✅</span><span style="font-size:13px;color:var(--text2)">'+esc(t)+'</span></div>';
+        });
+      } else {
+        historyHtml += '<div style="font-size:12px;color:var(--text3);padding:4px 8px">'+taskCount+' tasks completed this day.</div>';
+      }
+      historyHtml += '</div></div>';
     });
   } else if(!todayDone.length){
-    historyHtml+='<div style="font-size:13px;color:var(--text3);padding:10px 0">Complete tasks to build your history.</div>';
+    historyHtml += '<div style="font-size:13px;color:var(--text3);padding:10px 0">No history yet. Complete tasks daily to build your record.</div>';
   }
-  historyHtml+='</div>';
+  historyHtml += '</div>';
 
   scroll.innerHTML += heatmapHtml + historyHtml;
+};
+
+
+// ===== TOGGLE HISTORY DAY =====
+window._togHist=function(uid){
+  var el=document.getElementById(uid);
+  var arr=document.getElementById('arr_'+uid);
+  if(!el)return;
+  var open=el.style.display==='block';
+  el.style.display=open?'none':'block';
+  if(arr)arr.textContent=open?'▶':'▼';
+};
+
+// ===== TOGGLE LEVEL DETAIL =====
+window._togLevel=function(uid){
+  var el=document.getElementById(uid);
+  var num=uid.replace('lv','');
+  var arr=document.getElementById('larr'+num);
+  if(!el)return;
+  var open=el.style.display==='block';
+  el.style.display=open?'none':'block';
+  if(arr)arr.textContent=open?'▶':'▼';
 };
 
 })();}catch(e){}}};
@@ -870,17 +912,41 @@ function renderProgress(){
   var levelEmojis=['','🌱','📈','🧠','🌊','💭','⚡','🎯','🏆','🔥','👑'];
   var html='<div class="card"><div class="card-t">🗺️ Level Map</div>';
   html+='<div style="font-size:13px;color:var(--text3);margin-bottom:12px">Level '+lvl+' — '+(levelNames[Math.min(lvl,10)]||'FOCAL Legend')+'</div>';
+  var levelDesc=['',
+    'You have taken your first step. Open the app daily and complete 1 task.',
+    'You are building a habit. Complete tasks consistently for a week.',
+    'Your brain is adapting. Use energy check-ins every morning.',
+    'You are in flow. Tasks feel easier. Rescue mode is your secret weapon.',
+    'You understand your patterns. Use the heatmap to spot your best days.',
+    'You are crushing it. Brain dump daily and let FOCAL sort your chaos.',
+    'You are unstoppable. Share your progress with friends.',
+    'Elite focus. You have built systems that work for your brain.',
+    'You are a role model for the ADHD community. Almost legendary.',
+    'FOCAL Legend. You have proven that ADHD is a superpower.'
+  ];
+  var levelPerks=['',
+    '🎯 Rescue Mode unlocked','📊 Progress tracking unlocked','🔥 Streak system active',
+    '⚡ Brain state detection active','📅 Heatmap unlocked','🧠 Pattern insights active',
+    '🏆 Hall of Fame eligible','👑 Elite badge','🌟 Community leader','👑 FOCAL Legend status'
+  ];
   for(var i=1;i<=10;i++){
     var done=i<lvl,current=i===lvl,locked=i>lvl;
     var pct=current?Math.round((xp%500)/500*100):done?100:0;
     var bg=done?'var(--success)':current?'var(--accent)':'var(--border)';
     var border=current?'2px solid var(--accent-dark)':'2px solid transparent';
-    html+='<div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:var(--rs);background:'+(current?'var(--accent-light)':'transparent')+';margin-bottom:4px;border:'+border+'">';
+    var uid2='lv'+i;
+    html+='<div style="border-radius:var(--rs);background:'+(current?'var(--accent-light)':'transparent')+';margin-bottom:4px;border:'+border+';overflow:hidden">';
+    html+='<div data-uid="'+uid2+'" onclick="window._togLevel(this.getAttribute(\"data-uid\"))" style="display:flex;align-items:center;gap:10px;padding:10px;cursor:pointer">';
     html+='<div style="width:36px;height:36px;border-radius:50%;background:'+bg+';display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">'+(done?'✅':current?levelEmojis[i]:'🔒')+'</div>';
-    html+='<div style="flex:1"><div style="font-size:13px;font-weight:700;color:'+(locked?'var(--text3)':'#111')+'">Level '+i+' — '+(levelNames[i]||'Legend')+'</div>';
-    if(current){html+='<div style="height:4px;background:var(--border);border-radius:2px;margin-top:4px"><div style="height:100%;width:'+pct+'%;background:var(--accent);border-radius:2px"></div></div><div style="font-size:10px;color:var(--accent);margin-top:2px">'+(xp%500)+' / 500 XP</div>';}
+    html+='<div style="flex:1"><div style="font-size:13px;font-weight:700;color:'+(locked?'var(--text3)':'var(--text)')+'">Level '+i+' — '+(levelNames[i]||'Legend')+'</div>';
+    if(current){html+='<div style="height:4px;background:var(--border);border-radius:2px;margin-top:4px"><div style="height:100%;width:'+pct+'%;background:var(--accent);border-radius:2px"></div></div><div style="font-size:10px;color:var(--accent);margin-top:2px">'+(xp%500)+' / 500 XP · In progress</div>';}
     else if(done){html+='<div style="font-size:10px;color:var(--success)">Completed ✓</div>';}
-    else{html+='<div style="font-size:10px;color:var(--text3)">'+(i*500-xp)+' XP away</div>';}
+    else{html+='<div style="font-size:10px;color:var(--text3)">'+(i*500-xp)+' XP to unlock</div>';}
+    html+='</div><div style="font-size:12px;color:var(--text3)" id="larr'+i+'">▶</div></div>';
+    html+='<div id="'+uid2+'" style="display:none;padding:0 12px 12px">';
+    html+='<div style="font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:8px">'+levelDesc[i]+'</div>';
+    html+='<div style="font-size:11px;font-weight:700;color:'+(locked?'var(--text3)':done?'var(--success)':'var(--accent)')+';background:'+(locked?'var(--bg3)':done?'var(--success-light)':'var(--accent-light)')+';border-radius:20px;padding:4px 10px;display:inline-block">'+levelPerks[i]+'</div>';
+    if(!locked){html+='<div style="font-size:11px;color:var(--text3);margin-top:6px">Requires '+(i*500)+' XP total</div>';}
     html+='</div></div>';
   }
   html+='</div>';
@@ -892,7 +958,7 @@ function renderProgress(){
   html+='</div>';
   html+='<div class="card"><div class="card-t">📅 Daily History</div>';
   var hist=(S.history||[]).slice().reverse();
-  if(hist.length){hist.forEach(function(day){var d=new Date(day.date);var label=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});html+='<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="font-size:12px;color:var(--text3);width:90px;flex-shrink:0">'+label+'</div><div style="flex:1;display:flex;gap:6px;flex-wrap:wrap"><span style="font-size:11px;background:var(--success-light);color:var(--success);border-radius:20px;padding:2px 8px;font-weight:600">✅ '+day.tasks+' tasks</span>'+(day.sessions?'<span style="font-size:11px;background:var(--accent-light);color:var(--accent);border-radius:20px;padding:2px 8px;font-weight:600">⏱ '+day.sessions+' sessions</span>':'')+'</div></div>';});}
+  if(hist.length){hist.forEach(function(day){var d=new Date(day.date);var label=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});html+='<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="font-size:12px;color:var(--text3);width:90px;flex-shrink:0">'+label+'</div><div style="flex:1;display:flex;gap:6px;flex-wrap:wrap"><span style="font-size:11px;background:var(--success-light);color:var(--success);border-radius:20px;padding:2px 8px;font-weight:600">&#x2705; '+day.tasks+' tasks</span>'+(day.sessions?'<span style="font-size:11px;background:var(--accent-light);color:var(--accent);border-radius:20px;padding:2px 8px;font-weight:600">&#x23f1; '+day.sessions+' sessions</span>':'')+'</div></div>';});}
   else{html+='<div style="font-size:13px;color:var(--text3);padding:10px 0">No history yet. Complete tasks daily to build your record.</div>';}
   html+='</div>';
   $('progress-scroll').innerHTML=html;
@@ -1188,7 +1254,7 @@ window.renderProgress = function(){
   // Task history by day
   var historyHtml = '<div class="card"><div class="card-t">📋 Task History</div>';
   var allHistory = (S.taskHistory||{});
-  var histDays = Object.keys(allHistory).sort(function(a,b){return new Date(b)-new Date(a);}).slice(0,7);
+  var histDays = Object.keys(allHistory).sort(function(a,b){return new Date(b)-new Date(a);});
 
   // Also show today's done tasks
   var todayDone = S.tasks.filter(function(t){return t.done;});
@@ -1216,6 +1282,28 @@ window.renderProgress = function(){
   historyHtml+='</div>';
 
   scroll.innerHTML += heatmapHtml + historyHtml;
+};
+
+
+// ===== TOGGLE HISTORY DAY =====
+window._togHist=function(uid){
+  var el=document.getElementById(uid);
+  var arr=document.getElementById('arr_'+uid);
+  if(!el)return;
+  var open=el.style.display==='block';
+  el.style.display=open?'none':'block';
+  if(arr)arr.textContent=open?'▶':'▼';
+};
+
+// ===== TOGGLE LEVEL DETAIL =====
+window._togLevel=function(uid){
+  var el=document.getElementById(uid);
+  var num=uid.replace('lv','');
+  var arr=document.getElementById('larr'+num);
+  if(!el)return;
+  var open=el.style.display==='block';
+  el.style.display=open?'none':'block';
+  if(arr)arr.textContent=open?'▶':'▼';
 };
 
 })();
