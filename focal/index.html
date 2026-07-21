@@ -968,11 +968,7 @@ function renderProgress(){
   html+='<div style="font-size:12px;color:rgba(255,255,255,.8);margin-top:4px">'+xp+' XP · '+(S.streak||0)+' day streak · '+S.tasks.filter(function(t){return t.done;}).length+' tasks done</div>';
   html+='<div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:6px">Screenshot and share with friends 🏆</div>';
   html+='</div>';
-  html+='<div class="card"><div class="card-t">📅 Daily History</div>';
-  var hist=(S.history||[]).slice().reverse();
-  if(hist.length){hist.forEach(function(day){var d=new Date(day.date);var label=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});html+='<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="font-size:12px;color:var(--text3);width:90px;flex-shrink:0">'+label+'</div><div style="flex:1;display:flex;gap:6px;flex-wrap:wrap"><span style="font-size:11px;background:var(--success-light);color:var(--success);border-radius:20px;padding:2px 8px;font-weight:600">&#x2705; '+day.tasks+' tasks</span>'+(day.sessions?'<span style="font-size:11px;background:var(--accent-light);color:var(--accent);border-radius:20px;padding:2px 8px;font-weight:600">&#x23f1; '+day.sessions+' sessions</span>':'')+'</div></div>';});}
-  else{html+='<div style="font-size:13px;color:var(--text3);padding:10px 0">No history yet. Complete tasks daily to build your record.</div>';}
-  html+='</div>';
+  
   $('progress-scroll').innerHTML=html;
 }
 function addXP(n){S.xp=(S.xp||0)+n;save();}
