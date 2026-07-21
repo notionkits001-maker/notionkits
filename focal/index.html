@@ -247,6 +247,17 @@ body.dark .qc-bar input{background:var(--bg2);color:var(--text)}
 .notif-banner{background:var(--accent-light);border:1.5px solid var(--accent);border-radius:var(--rs);padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
 .notif-banner span{font-size:13px;color:var(--accent);font-weight:600;flex:1}
 .notif-btn{background:var(--accent);border-radius:var(--rx);padding:8px 12px;font-size:12px;font-weight:700;color:#fff}
+
+/* ===== PREMIUM FEEL ===== */
+.card{transition:transform 0.15s ease, box-shadow 0.15s ease}
+.card:active{transform:scale(0.98)}
+.btn-go{letter-spacing:0.5px}
+.tsk{transition:opacity 0.2s ease, transform 0.2s ease}
+.tsk:active{transform:scale(0.99)}
+.step:active{transform:scale(0.98);background:var(--accent-light)}
+.med:active{transform:scale(0.99)}
+.rt:active{transform:scale(0.99)}
+.hist-row:active{background:var(--bg3)}
 </style>
 </head>
 <body>
@@ -263,6 +274,7 @@ body.dark .qc-bar input{background:var(--bg2);color:var(--text)}
 </div>
 <button class="btn-go" id="btn-unlock" onclick="checkKey()">Unlock FOCAL</button>
 <button class="btn-bio" id="btn-bio">🔐 Use Face ID / Fingerprint</button>
+<div style="margin-top:20px;text-align:center"><a href="https://premiumnotionkits.etsy.com" target="_blank" style="color:var(--accent);font-size:14px;font-weight:600;text-decoration:none">Don't have a key? Get FOCAL on Etsy →</a></div>
 <div class="lk-foot">🔒 Your data never leaves your device</div>
 </div>
 <div id="onboard" class="screen">
@@ -1236,6 +1248,140 @@ window._togLevel=function(uid){
     if(arr)arr.textContent='▼';
   }
 };
+
+
+
+// ============================================
+// FINAL OVERRIDE: Clickable history + level map + A-F features
+// Self-contained onclicks - no external function dependencies
+// ============================================
+(function(){
+  var _finalOrigRP = window.renderProgress || renderProgress;
+  window.renderProgress = function(){
+    _finalOrigRP();
+    var scroll = document.getElementById('progress-scroll');
+    if(!scroll) return;
+
+    // Remove any duplicate history sections added by earlier overrides
+    // (keep only level map + share card + heatmap from original)
+
+    // ===== E: SHARE PROGRESS BUTTON =====
+    var xp=S.xp||0, lvl=Math.floor(xp/500)+1;
+    var totalDone = S.tasks.filter(function(t){return t.done;}).length;
+    var histCount = Object.keys(S.taskHistory||{}).length;
+    var shareHtml = '<button onclick="var txt=\'I am Level '+lvl+' on FOCAL — '+(S.streak||0)+' day streak, '+totalDone+' tasks done today 🔥 Get yours: focal-app-4.vercel.app\';if(navigator.clipboard){navigator.clipboard.writeText(txt);this.textContent=\'✅ Copied! Paste anywhere\';}else{this.textContent=txt;}" style="width:100%;background:var(--bg2);border:1.5px solid var(--accent);border-radius:10px;padding:12px;font-size:13px;font-weight:700;color:var(--accent);margin-top:8px;cursor:pointer">📣 Share my progress</button>';
+    scroll.innerHTML += shareHtml;
+
+    // ===== CLICKABLE DAILY HISTORY (A + B + C + D) =====
+    var allHistory = S.taskHistory || {};
+    var histDays = Object.keys(allHistory).sort(function(a,b){return new Date(b)-new Date(a);});
+    var todayDone = S.tasks.filter(function(t){return t.done;});
+
+    var html = '<div style="background:var(--bg2);border-radius:14px;padding:14px;margin-top:10px;border:1px solid var(--border)">';
+    html += '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">📋 Daily History</div>';
+
+    function histRow(uid, label, sub, taskNames, hasStreak){
+      var r = '<div style="border-bottom:1px solid var(--border)">';
+      r += '<div class="hist-row" data-t="'+uid+'" style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;cursor:pointer">';
+      r += '<div><div style="font-size:13px;font-weight:600;color:var(--text)">'+label+(hasStreak?' 🔥':'')+'</div>';
+      r += '<div style="font-size:11px;color:var(--text3);margin-top:2px">'+sub+'</div></div>';
+      r += '<span class="harr" style="color:var(--text3);font-size:12px">▶</span></div>';
+      r += '<div id="'+uid+'" style="display:none;padding-bottom:8px" data-o="0">';
+      if(taskNames && taskNames.length){
+        taskNames.forEach(function(t){
+          r += '<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--bg);border-radius:6px;margin-bottom:4px"><span>✅</span><span style="font-size:13px;color:var(--text2)">'+esc(t)+'</span></div>';
+        });
+      } else {
+        r += '<div style="font-size:12px;color:var(--text3);padding:4px 8px">Tasks completed this day.</div>';
+      }
+      r += '</div></div>';
+      return r;
+    }
+
+    // Today
+    if(todayDone.length){
+      html += histRow('fh_today','Today', todayDone.length+' tasks completed', todayDone.map(function(t){return t.text;}), (S.streak||0)>0);
+    }
+
+    // A: Show first 14 days, then Show More button
+    var shown = 0;
+    var maxShow = 14;
+    var weekTaskCount = 0;
+    var weekStart = null;
+
+    histDays.forEach(function(dateStr, idx){
+      var day = allHistory[dateStr];
+      if(!day) return;
+      var d = new Date(dateStr);
+      var label = d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+      var uid = 'fh_'+idx;
+      var taskCount = (day.length!==undefined)?day.length:(day.tasks||0);
+      var taskList = (day.length!==undefined)?day.map(function(x){return x.text||x;}):(day.taskList||[]);
+      var sub = '✅ '+(taskList.length||taskCount)+' tasks';
+      var hidden = shown >= maxShow;
+      if(hidden){
+        html += '<div class="fh-extra" style="display:none">';
+      }
+      html += histRow(uid, label, sub, taskList, false);
+      if(hidden){
+        html += '</div>';
+      }
+      shown++;
+    });
+
+    // Show more button (A)
+    if(shown > maxShow){
+      html += '<button data-showmore="1" style="width:100%;background:none;border:none;padding:10px;font-size:13px;color:var(--accent);font-weight:600;cursor:pointer">Show all '+shown+' days ▼</button>';
+    }
+
+    // B: Empty state with preview
+    if(!todayDone.length && !histDays.length){
+      html += '<div style="opacity:0.4;pointer-events:none">';
+      html += histRow('fh_ex1','Monday, Jan 1','✅ 5 tasks',['Example: Finish report','Example: Call dentist'],true);
+      html += histRow('fh_ex2','Sunday, Dec 31','✅ 3 tasks',['Example: Grocery run'],false);
+      html += '</div>';
+      html += '<div style="font-size:13px;color:var(--text3);padding:10px 0;text-align:center">👆 This is what your history will look like.<br>Complete your first task today!</div>';
+    }
+
+    html += '</div>';
+    scroll.innerHTML += html;
+
+    // Attach click handlers via event delegation (bulletproof)
+    scroll.addEventListener('click', function(e){
+      var row = e.target.closest('.hist-row');
+      if(row){
+        var uid = row.getAttribute('data-t');
+        var el = document.getElementById(uid);
+        var arr = row.querySelector('.harr');
+        if(el){
+          var open = el.getAttribute('data-o')==='1';
+          el.style.display = open?'none':'block';
+          el.setAttribute('data-o', open?'0':'1');
+          if(arr) arr.textContent = open?'▶':'▼';
+        }
+        return;
+      }
+      var more = e.target.closest('[data-showmore]');
+      if(more){
+        document.querySelectorAll('.fh-extra').forEach(function(x){x.style.display='block';});
+        more.style.display='none';
+      }
+      // Level map rows (data-uid from earlier code)
+      var lvlRow = e.target.closest('[data-uid]');
+      if(lvlRow){
+        var luid = lvlRow.getAttribute('data-uid');
+        var lel = document.getElementById(luid);
+        if(lel){
+          var lopen = lel.getAttribute('data-o')==='1';
+          lel.style.display = lopen?'none':'block';
+          lel.setAttribute('data-o', lopen?'0':'1');
+          var larr = lvlRow.querySelector('[id^=larr]');
+          if(larr) larr.textContent = lopen?'▶':'▼';
+        }
+      }
+    });
+  };
+})();
 
 })();
 </script>
