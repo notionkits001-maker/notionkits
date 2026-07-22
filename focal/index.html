@@ -258,6 +258,8 @@ body.dark .qc-bar input{background:var(--bg2);color:var(--text)}
 .med:active{transform:scale(0.99)}
 .rt:active{transform:scale(0.99)}
 .hist-row:active{background:var(--bg3)}
+
+@keyframes slideDown{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
 </style>
 </head>
 <body>
@@ -274,7 +276,7 @@ body.dark .qc-bar input{background:var(--bg2);color:var(--text)}
 </div>
 <button class="btn-go" id="btn-unlock" onclick="window._ck()">Unlock FOCAL</button>
 <button class="btn-bio" id="btn-bio">🔐 Use Face ID / Fingerprint</button>
-<div style="margin-top:20px;text-align:center"><a href="https://www.etsy.com/listing/4541779902/focal-adhd-executive-function-app-o-no" target="_blank" style="color:var(--accent);font-size:14px;font-weight:600;text-decoration:none">Don't have a key? Get FOCAL on Etsy →</a></div>
+<div style="margin-top:20px;text-align:center"><a href="https://premiumnotionkits.etsy.com" target="_blank" style="color:var(--accent);font-size:14px;font-weight:600;text-decoration:none">Don't have a key? Get FOCAL on Etsy →</a></div>
 <div class="lk-foot">🔒 Your data never leaves your device</div>
 </div>
 <div id="onboard" class="screen">
@@ -792,6 +794,19 @@ function getConditionTaskLabel(){
 var _origRenderHome = renderHome;
 window.renderHome = function(){
   _origRenderHome();
+  // Show notification banner if not enabled
+  try{
+    var Ss=JSON.parse(localStorage.getItem('focal_s')||'{}');
+    if(!Ss.morningAlertEnabled){
+      var sc=document.getElementById('home-scroll');
+      if(sc&&!sc.querySelector('.notif-banner')){
+        var nb=document.createElement('div');
+        nb.className='notif-banner';
+        nb.innerHTML='<span>🔔 Get reminders on any browser</span><button class="notif-btn" onclick="requestAllNotifications()">Enable</button>';
+        sc.insertBefore(nb,sc.firstChild);
+      }
+    }
+  }catch(e){}
   // Add condition greeting under date
   var dateEl = document.getElementById('greet-date');
   if(dateEl && S.conditions && S.conditions.length){
@@ -806,7 +821,7 @@ window.renderHome = function(){
     if(scroll){
       var banner = document.createElement('div');
       banner.className = 'notif-banner';
-      banner.innerHTML = '<span>🔔 Get daily reminders to check in</span><button class="notif-btn" onclick="requestNotifications()">Enable</button>';
+      banner.innerHTML = '<span>🔔 Get daily reminders to check in</span><button class="notif-btn" onclick="requestAllNotifications()">Enable</button>';
       scroll.insertBefore(banner, scroll.firstChild);
     }
   }
@@ -1279,6 +1294,19 @@ function getConditionTaskLabel(){
 var _origRenderHome = renderHome;
 window.renderHome = function(){
   _origRenderHome();
+  // Show notification banner if not enabled
+  try{
+    var Ss=JSON.parse(localStorage.getItem('focal_s')||'{}');
+    if(!Ss.morningAlertEnabled){
+      var sc=document.getElementById('home-scroll');
+      if(sc&&!sc.querySelector('.notif-banner')){
+        var nb=document.createElement('div');
+        nb.className='notif-banner';
+        nb.innerHTML='<span>🔔 Get reminders on any browser</span><button class="notif-btn" onclick="requestAllNotifications()">Enable</button>';
+        sc.insertBefore(nb,sc.firstChild);
+      }
+    }
+  }catch(e){}
   // Add condition greeting under date
   var dateEl = document.getElementById('greet-date');
   if(dateEl && S.conditions && S.conditions.length){
@@ -1293,7 +1321,7 @@ window.renderHome = function(){
     if(scroll){
       var banner = document.createElement('div');
       banner.className = 'notif-banner';
-      banner.innerHTML = '<span>🔔 Get daily reminders to check in</span><button class="notif-btn" onclick="requestNotifications()">Enable</button>';
+      banner.innerHTML = '<span>🔔 Get daily reminders to check in</span><button class="notif-btn" onclick="requestAllNotifications()">Enable</button>';
       scroll.insertBefore(banner, scroll.firstChild);
     }
   }
@@ -1635,6 +1663,131 @@ rescheduleAllReminders();
 if(Notification&&Notification.permission==='default'){
   // Will be requested when they enable notifications via banner
 }
+
+})();
+</script>
+
+<script>
+// ===== UNIVERSAL NOTIFICATION SYSTEM (separate script) =====
+(function(){
+  var _alarmCheck = null;
+
+  function startAlarmSystem(){
+    if(_alarmCheck) return;
+    _alarmCheck = setInterval(checkTaskAlarms, 30000);
+    checkTaskAlarms();
+  }
+
+  function checkTaskAlarms(){
+    try{
+      var S = JSON.parse(localStorage.getItem('focal_s')||'{}');
+      var now = new Date();
+      var timeStr = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+      var changed = false;
+
+      // Task reminders
+      (S.tasks||[]).forEach(function(t){
+        if(t.done||!t.reminderTime) return;
+        if(t.reminderTime===timeStr&&!t.alarmFired){
+          t.alarmFired = true;
+          changed = true;
+          showAlert('⏰ Time for: '+t.text,'accent');
+          playSound();
+          tryPush('FOCAL ⏰','Time for: '+t.text);
+        }
+      });
+
+      // Morning 9am
+      if(timeStr==='09:00'&&S.morningAlertEnabled){
+        showAlert('🌅 Good morning '+(S.name||'')+'! How is your battery today?','accent');
+        playSound();
+        tryPush('FOCAL 🌅','Good morning! Time to check in.');
+      }
+
+      // Evening 8pm
+      if(timeStr==='20:00'&&S.eveningAlertEnabled){
+        showAlert('🌙 Evening check-in. Did you do your routine?','success');
+        playSound();
+        tryPush('FOCAL 🌙','Evening check-in time.');
+      }
+
+      // Reset alarmFired daily
+      var today = now.toDateString();
+      if(S.alarmResetDate!==today){
+        (S.tasks||[]).forEach(function(t){delete t.alarmFired;});
+        S.alarmResetDate = today;
+        changed = true;
+      }
+
+      if(changed) localStorage.setItem('focal_s', JSON.stringify(S));
+    }catch(e){}
+  }
+
+  function showAlert(msg, type){
+    var ex = document.getElementById('focal-notif-banner');
+    if(ex) ex.remove();
+    var col = type==='success'?'#16A34A':'#F97316';
+    var b = document.createElement('div');
+    b.id = 'focal-notif-banner';
+    b.style.cssText = 'position:fixed;top:0;left:0;right:0;max-width:430px;margin:0 auto;z-index:9999;background:'+col+';color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,.3);animation:slideDown .3s ease;cursor:pointer';
+    b.innerHTML = '<span style="flex:1;font-size:14px;font-weight:600">'+msg+'</span><span style="font-size:18px">✕</span>';
+    b.onclick = function(){b.remove();};
+    document.body.appendChild(b);
+    setTimeout(function(){if(b.parentNode)b.remove();},10000);
+  }
+
+  function playSound(){
+    try{
+      var ctx = new(window.AudioContext||window.webkitAudioContext)();
+      [880,1100,880].forEach(function(f,i){
+        var o=ctx.createOscillator(),g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);
+        o.frequency.value=f;o.type='sine';
+        g.gain.setValueAtTime(0,ctx.currentTime+i*.15);
+        g.gain.linearRampToValueAtTime(.2,ctx.currentTime+i*.15+.05);
+        g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.15+.3);
+        o.start(ctx.currentTime+i*.15);
+        o.stop(ctx.currentTime+i*.15+.3);
+      });
+    }catch(e){}
+  }
+
+  function tryPush(title,body){
+    if(typeof Notification==='undefined') return;
+    if(Notification.permission==='granted'){
+      try{new Notification(title,{body:body});}catch(e){}
+    }
+  }
+
+  window.requestAllNotifications = function(){
+    try{
+      var S = JSON.parse(localStorage.getItem('focal_s')||'{}');
+      S.morningAlertEnabled = true;
+      S.eveningAlertEnabled = true;
+      localStorage.setItem('focal_s', JSON.stringify(S));
+    }catch(e){}
+
+    if(typeof Notification!=='undefined'&&Notification.permission==='default'){
+      Notification.requestPermission().then(function(p){
+        showAlert(p==='granted'?'✅ Full notifications enabled! 9am and 8pm reminders set.':'✅ In-app reminders enabled! Keep the app open.','success');
+      });
+    } else {
+      showAlert('✅ Reminders enabled! You will see alerts at 9am and 8pm.','success');
+    }
+    startAlarmSystem();
+    // Re-render home to hide banner
+    if(window.renderHome) renderHome();
+  };
+
+  window.scheduleTaskReminder = function(id,text,timeStr){
+    startAlarmSystem();
+  };
+
+  // Auto-start if enabled
+  try{
+    var S0 = JSON.parse(localStorage.getItem('focal_s')||'{}');
+    if(S0.morningAlertEnabled||S0.eveningAlertEnabled) startAlarmSystem();
+  }catch(e){}
 
 })();
 </script>
